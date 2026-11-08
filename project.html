@@ -128,7 +128,7 @@ await response.json();
 
 const project =
 data.find(
-p => p.ProjectName === selectedProject
+p => p.ProjectName.trim() === selectedProject.trim()
 );
 
 if(project){
