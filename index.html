@@ -284,6 +284,7 @@ display:none;
 <li><a href="#projects">Projects</a></li>
 <li><a href="#skills">Skills</a></li>
 <li><a href="#contact">Contact</a></li>
+<li><a href="#" onclick="openAdmin()">Admin</a></li>
 </ul>
 </nav>
 
@@ -593,6 +594,24 @@ async function loadProjects() {
 }
 
 loadProjects();
+    function openAdmin(){
+
+    const username = prompt("Username");
+
+    if(username !== "HS style"){
+        alert("Invalid Username");
+        return;
+    }
+
+    const password = prompt("Password");
+
+    if(password !== "HS@styles123"){
+        alert("Invalid Password");
+        return;
+    }
+
+    window.location.href = "admin.html";
+}
 
 </script>
 
