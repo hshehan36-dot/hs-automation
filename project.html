@@ -93,9 +93,17 @@ Technology
 <div class="label">
 Description
 </div>
-
+  
 <p id="projectDescription"></p>
+<div class="card">
 
+<div class="label">
+Full Description
+</div>
+
+<p id="projectFullDescription"></p>
+
+</div>
 </div>
 
 <a
@@ -154,7 +162,11 @@ document.getElementById(
 "projectDescription"
 ).innerText =
 project.Description;
-
+  
+document.getElementById(
+"projectFullDescription"
+).innerText =
+project.FullDescription || "";
 }
 
 }
