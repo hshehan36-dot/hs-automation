@@ -86,10 +86,6 @@ alert("Login Success");
 id="projectName"
 placeholder="Project Name">
 
-<textarea
-id="description"
-placeholder="Description"></textarea>
-
 <input
 id="technology"
 placeholder="Technology">
@@ -99,8 +95,8 @@ id="imageUrl"
 placeholder="Image URL">
 
     <textarea
-id="fullDescription"
-placeholder="Full Description"
+id="projectOverview"
+placeholder="Project Overview"
 rows="6"></textarea>
     
 <input
@@ -124,9 +120,6 @@ const data = {
 ProjectName:
 document.getElementById("projectName").value,
 
-Description:
-document.getElementById("description").value,
-
 Technology:
 document.getElementById("technology").value,
 
@@ -136,8 +129,8 @@ document.getElementById("imageUrl").value,
 ProjectURL:
 document.getElementById("projectUrl").value,
 
-FullDescription:
-document.getElementById("fullDescription").value
+ProjectOverview:
+document.getElementById("projectOverview").value
 
 };
 
