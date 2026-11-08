@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>HS Admin Panel</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+background:#071426;
+font-family:Segoe UI;
+padding:40px;
+color:white;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+}
+
+.card{
+background:#10233d;
+padding:25px;
+border-radius:15px;
+}
+
+input,
+textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+margin-bottom:15px;
+border:none;
+border-radius:8px;
+}
+
+button{
+background:#00d4ff;
+border:none;
+padding:12px 25px;
+font-weight:bold;
+border-radius:8px;
+cursor:pointer;
+}
+
+h1{
+color:#00d4ff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<script>
+
+const username = prompt("Username");
+const password = prompt("Password");
+
+if(
+username !== "HS style" ||
+password !== "HS@styles123"
+){
+alert("Access Denied");
+window.location.href="index.html";
+}
+
+</script>
+
+<div class="container">
+
+<h1>HS Admin Panel</h1>
+
+<div class="card">
+
+<input
+id="projectName"
+placeholder="Project Name">
+
+<textarea
+id="description"
+placeholder="Description"></textarea>
+
+<input
+id="technology"
+placeholder="Technology">
+
+<input
+id="imageUrl"
+placeholder="Image URL">
+
+<input
+id="projectUrl"
+placeholder="Project URL">
+
+<button onclick="saveProject()">
+Add Project
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+async function saveProject(){
+
+const data = {
+
+ProjectName:
+document.getElementById("projectName").value,
+
+Description:
+document.getElementById("description").value,
+
+Technology:
+document.getElementById("technology").value,
+
+ImageURL:
+document.getElementById("imageUrl").value,
+
+ProjectURL:
+document.getElementById("projectUrl").value
+
+};
+
+try{
+
+await fetch(
+"https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec",
+{
+method:"POST",
+body:JSON.stringify(data)
+}
+);
+
+alert("Project Added Successfully");
+
+}
+catch(err){
+
+alert("Error Saving Project");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
