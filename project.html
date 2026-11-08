@@ -125,11 +125,16 @@ await fetch(
 
 const data =
 await response.json();
-
+console.log("Selected Project:");
+console.log(selectedProject);
 const project =
 data.find(
-p => p.ProjectName.trim() === selectedProject.trim()
+p =>
+p.ProjectName.trim().toLowerCase() ===
+selectedProject.trim().toLowerCase()
 );
+console.log("Found Project:");
+console.log(project);
 
 if(project){
 
