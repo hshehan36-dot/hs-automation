@@ -50,6 +50,10 @@ color:#00d4ff;
 font-size:22px;
 margin-bottom:10px;
 }
+  #projectOverview{
+white-space:pre-line;
+line-height:1.8;
+}
 
 .back-btn{
 display:inline-block;
@@ -93,17 +97,7 @@ Technology
 <div class="label">
 Project Overview
 </div>
-
-<p id="projectFullDescription"></p>
-<div class="card">
-
-<div class="label">
-Full Description
-</div>
-
-<p id="projectFullDescription"></p>
-
-</div>
+<p id="projectOverview"></p>
 </div>
 
 <a
@@ -160,9 +154,9 @@ project.Technology;
 
   
 document.getElementById(
-"projectFullDescription"
+"projectOverview"
 ).innerText =
-project.FullDescription || "";
+project["Project Overview"] || "";
 }
 
 }
