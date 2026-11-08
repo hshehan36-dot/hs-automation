@@ -59,24 +59,20 @@ color:#00d4ff;
 <script>
 
 const username = prompt("Username");
+
+if(username !== "HS style"){
+    alert("Access Denied");
+    throw new Error("Access Denied");
+}
+
 const password = prompt("Password");
 
-alert(
-"User = " + username +
-"\nPassword = " + password
-);
+if(password !== "HS@styles123"){
+    alert("Access Denied");
+    throw new Error("Access Denied");
+}
 
-if(
-username !== "HS style" ||
-password !== "HS@styles123"
-){
-alert("Access Denied");
-window.location.href="index.html";
-}
-else{
 alert("Login Success");
-}.location.href="index.html";
-}
 
 </script>
 
