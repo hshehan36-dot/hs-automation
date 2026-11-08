@@ -567,10 +567,9 @@ async function loadProjects() {
                         <strong>${project.Technology}</strong>
                     </p>
 
-                    <a href="${project.ProjectURL}"
-                       target="_blank"
-                       class="btn">
-                       View Project
+                    <a href="project.html?project=${encodeURIComponent(project.ProjectName)}"
+                    class="btn">
+                    View Project
                     </a>
 
                 </div>
