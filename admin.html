@@ -20,7 +20,7 @@ color:white;
 }
 
 .container{
-max-width:840px;
+max-width:920px;
 margin:auto;
 }
 
@@ -91,6 +91,26 @@ display:none;
 
 .panel-section.active{
 display:block;
+}
+
+.mode-banner{
+display:none;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:10px;
+background:rgba(0,212,255,.12);
+border:1px solid rgba(0,212,255,.4);
+color:#e0f2fe;
+padding:12px 16px;
+border-radius:10px;
+margin-bottom:16px;
+font-size:13px;
+font-weight:600;
+}
+
+.mode-banner.show{
+display:flex;
 }
 
 .section-label{
@@ -234,16 +254,114 @@ button.secondary-btn{
 background:rgba(255,255,255,.08);
 color:#e2e8f0;
 border:1px solid rgba(255,255,255,.16);
-padding:12px 20px;
+padding:11px 18px;
 font-weight:600;
 border-radius:8px;
 cursor:pointer;
-font-size:14px;
+font-size:13px;
 transition:.2s;
 }
 
 button.secondary-btn:hover{
 background:rgba(255,255,255,.15);
+}
+
+button.danger-btn{
+background:rgba(239,68,68,.16);
+color:#fca5a5;
+border:1px solid rgba(248,113,113,.45);
+padding:8px 14px;
+font-weight:600;
+border-radius:8px;
+cursor:pointer;
+font-size:12px;
+transition:.2s;
+}
+
+button.danger-btn:hover{
+background:rgba(239,68,68,.3);
+color:white;
+}
+
+button.mini-btn{
+background:rgba(0,212,255,.14);
+color:#00d4ff;
+border:1px solid rgba(0,212,255,.35);
+padding:8px 14px;
+font-weight:600;
+border-radius:8px;
+cursor:pointer;
+font-size:12px;
+transition:.2s;
+}
+
+button.mini-btn:hover{
+background:#00d4ff;
+color:#071426;
+}
+
+/* Manage Projects List */
+.manage-toolbar{
+display:flex;
+gap:10px;
+align-items:center;
+flex-wrap:wrap;
+margin-bottom:16px;
+}
+
+.manage-toolbar input{
+margin:0;
+flex:1;
+min-width:200px;
+}
+
+.project-manage-list{
+display:grid;
+gap:12px;
+}
+
+.manage-item{
+background:#0b192e;
+border:1px solid rgba(255,255,255,.08);
+border-radius:12px;
+padding:16px 18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:14px;
+flex-wrap:wrap;
+}
+
+.manage-item-title{
+font-size:17px;
+font-weight:700;
+color:white;
+display:flex;
+align-items:center;
+gap:8px;
+flex-wrap:wrap;
+}
+
+.manage-featured-tag{
+background:rgba(250,204,21,.16);
+color:#fde047;
+border:1px solid rgba(250,204,21,.4);
+padding:2px 9px;
+border-radius:999px;
+font-size:11px;
+font-weight:700;
+}
+
+.manage-item-meta{
+font-size:13px;
+color:#94a3b8;
+margin-top:4px;
+}
+
+.manage-item-actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
 }
 
 .status-banner{
@@ -312,7 +430,8 @@ alert("Login Success");
 </div>
 
 <div class="tab-bar">
-<button type="button" class="tab-btn active" id="tabProject" onclick="switchTab('project')">+ Add Project</button>
+<button type="button" class="tab-btn active" id="tabProject" onclick="switchTab('project')">+ Add / Edit Project</button>
+<button type="button" class="tab-btn" id="tabManage" onclick="switchTab('manage')">🗂 Manage Projects</button>
 <button type="button" class="tab-btn" id="tabStats" onclick="switchTab('stats')">📊 Update Stats</button>
 </div>
 
@@ -320,8 +439,13 @@ alert("Login Success");
 
 <div class="card">
 
-<!-- Add Project Section -->
+<!-- Add / Edit Project Section -->
 <div class="panel-section active" id="sectionProject">
+
+<div class="mode-banner" id="editModeBanner">
+<span id="editModeText">Editing Project</span>
+<button type="button" class="secondary-btn" onclick="cancelEditMode()">Cancel Edit (Switch to Add)</button>
+</div>
 
 <span class="section-label">Project Details</span>
 
@@ -390,6 +514,18 @@ alert("Login Success");
 
 </div>
 
+<!-- Manage Existing Projects Section -->
+<div class="panel-section" id="sectionManage">
+<span class="section-label">Existing Projects (Edit or Delete)</span>
+<div class="manage-toolbar">
+<input id="manageSearch" placeholder="Search existing projects..." oninput="renderManageList()">
+<button type="button" class="secondary-btn" onclick="loadManageProjects()">↻ Refresh List</button>
+</div>
+<div class="project-manage-list" id="manageProjectsList">
+<p style="color:#94a3b8;font-size:14px;">Click "Manage Projects" or Refresh to load projects.</p>
+</div>
+</div>
+
 <!-- Update Stats Section -->
 <div class="panel-section" id="sectionStats">
 
@@ -431,6 +567,10 @@ Enter the latest counts to update your Google Sheet <code>Stats</code> tab.
 
 <script>
 const GAS_URL = "https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec";
+const SHEET_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1";
+
+let manageProjectsCache = [];
+let editingProjectContext = null; // { rowIndex, originalProjectName }
 
 const inputIdsBySlot = {
     1: "imageUrl",
@@ -439,6 +579,14 @@ const inputIdsBySlot = {
     4: "imageUrl4",
     5: "imageUrl5"
 };
+
+function escapeHtml(str = "") {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
 
 function showStatus(type, text) {
     const banner = document.getElementById("statusBanner");
@@ -454,11 +602,17 @@ function hideStatus() {
 
 function switchTab(tab) {
     hideStatus();
-    const isProject = tab === "project";
-    document.getElementById("tabProject").classList.toggle("active", isProject);
-    document.getElementById("tabStats").classList.toggle("active", !isProject);
-    document.getElementById("sectionProject").classList.toggle("active", isProject);
-    document.getElementById("sectionStats").classList.toggle("active", !isProject);
+    document.getElementById("tabProject").classList.toggle("active", tab === "project");
+    document.getElementById("tabManage").classList.toggle("active", tab === "manage");
+    document.getElementById("tabStats").classList.toggle("active", tab === "stats");
+
+    document.getElementById("sectionProject").classList.toggle("active", tab === "project");
+    document.getElementById("sectionManage").classList.toggle("active", tab === "manage");
+    document.getElementById("sectionStats").classList.toggle("active", tab === "stats");
+
+    if (tab === "manage") {
+        loadManageProjects();
+    }
 }
 
 function updateImagePreview(slot) {
@@ -492,14 +646,61 @@ function clearProjectForm() {
     [1, 2, 3, 4, 5].forEach(slot => updateImagePreview(slot));
 }
 
+function cancelEditMode() {
+    editingProjectContext = null;
+    document.getElementById("editModeBanner").classList.remove("show");
+    document.getElementById("saveBtn").innerText = "Add Project";
+    clearProjectForm();
+}
+
+function startEditProject(cacheIdx) {
+    const item = manageProjectsCache[cacheIdx];
+    if (!item) return;
+
+    editingProjectContext = {
+        rowIndex: item.rowIndex,
+        originalProjectName: item.ProjectName || ""
+    };
+
+    document.getElementById("projectName").value = item.ProjectName || "";
+    document.getElementById("technology").value = item.Technology || "";
+    document.getElementById("projectUrl").value = item.ProjectURL || "";
+
+    const featVal = String(item.Featured || "").trim().toLowerCase();
+    document.getElementById("featuredProject").checked = ["yes", "true", "1", "featured", "pin", "pinned"].includes(featVal);
+
+    document.getElementById("imageUrl").value = item.ImageURL || "";
+    document.getElementById("imageUrl2").value = item.ImageURL2 || "";
+    document.getElementById("imageUrl3").value = item.ImageURL3 || "";
+    document.getElementById("imageUrl4").value = item.ImageURL4 || "";
+    document.getElementById("imageUrl5").value = item.ImageURL5 || "";
+
+    [1, 2, 3, 4, 5].forEach(slot => updateImagePreview(slot));
+
+    document.getElementById("projectOverview").value = item["Project Overview"] || item.ProjectOverview || "";
+    document.getElementById("keyFeatures").value = item.KeyFeatures || "";
+    document.getElementById("businessImpact").value = item.BusinessImpact || "";
+    document.getElementById("architecture").value = item.Architecture || "";
+
+    document.getElementById("editModeText").innerText = `Editing: "${item.ProjectName}" (Row ${item.rowIndex})`;
+    document.getElementById("editModeBanner").classList.add("show");
+    document.getElementById("saveBtn").innerText = "Save Changes";
+
+    switchTab("project");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 async function saveProject(){
     const saveBtn = document.getElementById("saveBtn");
     hideStatus();
 
+    const isEditing = Boolean(editingProjectContext);
     const isFeatured = document.getElementById("featuredProject").checked;
 
     const data = {
-        type: "project",
+        type: isEditing ? "update_project" : "project",
+        rowIndex: isEditing ? editingProjectContext.rowIndex : "",
+        originalProjectName: isEditing ? editingProjectContext.originalProjectName : "",
         ProjectName: document.getElementById("projectName").value.trim(),
         Technology: document.getElementById("technology").value.trim(),
         ImageURL: document.getElementById("imageUrl").value.trim(),
@@ -522,7 +723,7 @@ async function saveProject(){
     }
 
     saveBtn.disabled = true;
-    saveBtn.innerText = "Saving...";
+    saveBtn.innerText = isEditing ? "Updating..." : "Saving...";
 
     try{
         await fetch(GAS_URL, {
@@ -530,8 +731,13 @@ async function saveProject(){
             body: JSON.stringify(data)
         });
 
-        showStatus("success", `Project "${data.ProjectName}" added successfully!`);
-        clearProjectForm();
+        if (isEditing) {
+            showStatus("success", `Project "${data.ProjectName}" updated successfully!`);
+            cancelEditMode();
+        } else {
+            showStatus("success", `Project "${data.ProjectName}" added successfully!`);
+            clearProjectForm();
+        }
     }
     catch(err){
         showStatus("error", "Error saving project. Please check your connection or Apps Script deployment.");
@@ -539,7 +745,95 @@ async function saveProject(){
     }
     finally{
         saveBtn.disabled = false;
-        saveBtn.innerText = "Add Project";
+        saveBtn.innerText = editingProjectContext ? "Save Changes" : "Add Project";
+    }
+}
+
+async function loadManageProjects() {
+    const listEl = document.getElementById("manageProjectsList");
+    listEl.innerHTML = `<p style="color:#94a3b8;font-size:14px;">Loading projects...</p>`;
+
+    try {
+        const res = await fetch(SHEET_API);
+        const rows = await res.json();
+        manageProjectsCache = (Array.isArray(rows) ? rows : [])
+            .map((r, idx) => ({ ...r, rowIndex: idx + 2 }))
+            .filter(r => (r.ProjectName || "").trim() !== "");
+
+        renderManageList();
+    } catch (err) {
+        listEl.innerHTML = `<p style="color:#fca5a5;font-size:14px;">Unable to load projects from Google Sheet.</p>`;
+        console.error(err);
+    }
+}
+
+function renderManageList() {
+    const listEl = document.getElementById("manageProjectsList");
+    const q = (document.getElementById("manageSearch").value || "").trim().toLowerCase();
+
+    const filtered = manageProjectsCache
+        .map((item, idx) => ({ item, idx }))
+        .filter(({ item }) => {
+            if (!q) return true;
+            return (item.ProjectName || "").toLowerCase().includes(q) ||
+                   (item.Technology || "").toLowerCase().includes(q);
+        });
+
+    if (!filtered.length) {
+        listEl.innerHTML = `<p style="color:#94a3b8;font-size:14px;">No matching projects found.</p>`;
+        return;
+    }
+
+    listEl.innerHTML = filtered.map(({ item, idx }) => {
+        const featVal = String(item.Featured || "").trim().toLowerCase();
+        const isFeat = ["yes", "true", "1", "featured", "pin", "pinned"].includes(featVal);
+
+        return `
+        <div class="manage-item">
+            <div>
+                <div class="manage-item-title">
+                    <span>${escapeHtml(item.ProjectName)}</span>
+                    ${isFeat ? `<span class="manage-featured-tag">⭐ Featured</span>` : ""}
+                </div>
+                <div class="manage-item-meta">
+                    Row #${item.rowIndex} • ${escapeHtml(item.Technology || "Automation")}
+                </div>
+            </div>
+            <div class="manage-item-actions">
+                <button type="button" class="mini-btn" onclick="startEditProject(${idx})">✏️ Edit</button>
+                <button type="button" class="danger-btn" onclick="deleteProjectRow(${idx})">🗑 Delete</button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+async function deleteProjectRow(cacheIdx) {
+    const item = manageProjectsCache[cacheIdx];
+    if (!item) return;
+
+    const ok = confirm(`Are you sure you want to delete "${item.ProjectName}" (Row ${item.rowIndex})?`);
+    if (!ok) return;
+
+    hideStatus();
+
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                type: "delete_project",
+                rowIndex: item.rowIndex,
+                ProjectName: item.ProjectName
+            })
+        });
+
+        showStatus("success", `Deleted "${item.ProjectName}" successfully.`);
+        if (editingProjectContext && editingProjectContext.rowIndex === item.rowIndex) {
+            cancelEditMode();
+        }
+        await loadManageProjects();
+    } catch (err) {
+        showStatus("error", "Error deleting project.");
+        console.error(err);
     }
 }
 
