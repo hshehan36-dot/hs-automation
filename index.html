@@ -443,10 +443,42 @@ cursor:pointer;
 transition:transform .28s ease, border-color .28s ease, box-shadow .28s ease;
 }
 
+.project.featured{
+border-color:rgba(250, 204, 21, .65);
+box-shadow:0 12px 28px rgba(0,0,0,.42), 0 0 0 1px rgba(250, 204, 21, .22);
+}
+
 .project:hover{
 transform:translateY(-8px);
 border-color:rgba(0,212,255,.72);
 box-shadow:0 18px 36px rgba(0,0,0,.5), 0 0 0 1px rgba(0,212,255,.22);
+}
+
+.featured-ribbon{
+position:absolute;
+top:10px;
+left:10px;
+z-index:2;
+background:linear-gradient(135deg,#facc15,#eab308);
+color:#071426;
+padding:4px 10px;
+border-radius:999px;
+font-size:11px;
+font-weight:800;
+box-shadow:0 4px 12px rgba(0,0,0,.35);
+}
+
+.featured-inline-pill{
+display:inline-flex;
+align-items:center;
+gap:4px;
+background:rgba(250, 204, 21, .16);
+color:#fde047;
+border:1px solid rgba(250, 204, 21, .45);
+padding:3px 10px;
+border-radius:999px;
+font-size:11px;
+font-weight:700;
 }
 
 .card-slider{
@@ -556,6 +588,13 @@ justify-content:space-between;
 align-items:center;
 gap:10px;
 margin-bottom:14px;
+flex-wrap:wrap;
+}
+
+.project-top-right{
+display:flex;
+align-items:center;
+gap:8px;
 flex-wrap:wrap;
 }
 
@@ -1028,7 +1067,10 @@ oninput="applyProjectFilters()">
 <div class="modal-card">
 <div class="modal-header">
 <div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
 <span class="tech-badge" id="modalTech"></span>
+<span class="featured-inline-pill" id="modalFeaturedBadge" style="display:none;">⭐ Featured</span>
+</div>
 <h3 id="modalTitle" style="margin-top:8px;"></h3>
 </div>
 <button class="modal-close" onclick="closeProjectModal()" aria-label="Close">×</button>
@@ -1169,6 +1211,11 @@ function escapeHtml(str = "") {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+}
+
+function isFeaturedProject(project) {
+    const val = String(project.Featured || project.featured || "").trim().toLowerCase();
+    return ["yes", "true", "1", "featured", "pin", "pinned"].includes(val);
 }
 
 function getProjectImages(project) {
@@ -1344,6 +1391,7 @@ function renderProjectsGrid(items) {
         const tech = (project.Technology || "Automation").trim();
         const overview = (project["Project Overview"] || "").trim();
         const projectUrl = (project.ProjectURL || "").trim();
+        const featured = isFeaturedProject(project);
         const images = cardSlideStates[originalIdx]?.images || [];
         const summaryText = overview || "Click card or View Project to explore full solution details and slideshow.";
         const detailsUrl = `project.html?project=${encodeURIComponent(name)}`;
@@ -1365,8 +1413,13 @@ function renderProjectsGrid(items) {
                    <button type="button" class="card-slide-btn next" onclick="stepCardSlide(event, ${originalIdx}, 1)" aria-label="Next image">›</button>`
                 : "";
 
+            const featuredRibbonHtml = featured
+                ? `<span class="featured-ribbon">⭐ Featured</span>`
+                : "";
+
             sliderHtml = `
             <div class="card-slider">
+                ${featuredRibbonHtml}
                 <img id="cardImg-${originalIdx}" src="${escapeHtml(images[currentSlideIdx])}" alt="${escapeHtml(name)}">
                 <span class="card-slide-badge" id="cardCounter-${originalIdx}">${currentSlideIdx + 1} / ${images.length}</span>
                 ${navHtml}
@@ -1374,18 +1427,25 @@ function renderProjectsGrid(items) {
             </div>`;
         }
 
+        const inlineFeaturedHtml = (featured && images.length === 0)
+            ? `<span class="featured-inline-pill">⭐ Featured</span>`
+            : "";
+
         const liveBtnHtml = projectUrl
             ? `<a href="${escapeHtml(projectUrl)}" target="_blank" rel="noopener" class="btn-ghost" onclick="event.stopPropagation()">Live App ↗</a>`
             : "";
 
         projectsContainer.innerHTML += `
-        <div class="project" onclick="openProjectModal(${originalIdx})" title="Click to quick preview">
+        <div class="project ${featured ? "featured" : ""}" onclick="openProjectModal(${originalIdx})" title="Click to quick preview">
             ${sliderHtml}
             <div class="project-body">
                 <div>
                     <div class="project-top">
                         <span class="project-index">PROJECT #${String(displayIdx + 1).padStart(2, "0")}</span>
-                        <span class="tech-badge">${escapeHtml(tech)}</span>
+                        <div class="project-top-right">
+                            ${inlineFeaturedHtml}
+                            <span class="tech-badge">${escapeHtml(tech)}</span>
+                        </div>
                     </div>
                     <div class="project-content">
                         <h3>${escapeHtml(name)}</h3>
@@ -1424,7 +1484,7 @@ function animateCounter(counter) {
     update();
 }
 
-/* Load Projects From Google Sheet */
+/* Load Projects From Google Sheet & Sort Featured First */
 async function loadProjects() {
     const projectsContainer = document.getElementById("projectsContainer");
     projectsContainer.innerHTML = "<p>Loading Projects...</p>";
@@ -1432,9 +1492,15 @@ async function loadProjects() {
     try {
         const response = await fetch(SHEET_API);
         const data = await response.json();
-        loadedProjectsData = Array.isArray(data)
+        const validRows = Array.isArray(data)
             ? data.filter(row => (row.ProjectName || "").trim() !== "")
             : [];
+
+        loadedProjectsData = validRows.sort((a, b) => {
+            const aFeat = isFeaturedProject(a) ? 1 : 0;
+            const bFeat = isFeaturedProject(b) ? 1 : 0;
+            return bFeat - aFeat;
+        });
 
         Object.keys(cardSlideStates).forEach(k => delete cardSlideStates[k]);
         loadedProjectsData.forEach((project, idx) => {
@@ -1462,8 +1528,10 @@ function openProjectModal(index) {
     const tech = (project.Technology || "Automation").trim();
     const overview = (project["Project Overview"] || "No additional overview provided.").trim();
     const projectUrl = (project.ProjectURL || "").trim();
+    const featured = isFeaturedProject(project);
 
     document.getElementById("modalTech").innerText = tech;
+    document.getElementById("modalFeaturedBadge").style.display = featured ? "inline-flex" : "none";
     document.getElementById("modalTitle").innerText = name;
     document.getElementById("modalOverview").innerText = overview;
     document.getElementById("modalFullLink").href = `project.html?project=${encodeURIComponent(name)}`;
