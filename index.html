@@ -1014,7 +1014,7 @@ oninput="applyProjectFilters()">
 </div>
 
 <div class="filter-pills" id="techFilterBar">
-<button type="button" class="filter-btn active" data-tech="ALL" onclick="selectTechFilter('ALL')">All</button>
+<button type="button" class="filter-btn active" data-tech="ALL" onclick="handleFilterButtonClick(this)">All</button>
 </div>
 
 <div class="result-count" id="projectResultCount"></div>
@@ -1263,19 +1263,25 @@ function buildFilterButtons(projects) {
 
     const sortedTechs = [...techSet].sort((a, b) => a.localeCompare(b));
 
-    let html = `<button type="button" class="filter-btn ${selectedTech === "ALL" ? "active" : ""}" data-tech="ALL" onclick="selectTechFilter('ALL')">All</button>`;
+    let html = `<button type="button" class="filter-btn ${selectedTech === "ALL" ? "active" : ""}" data-tech="ALL" onclick="handleFilterButtonClick(this)">All</button>`;
+
     sortedTechs.forEach(tech => {
         const isActive = selectedTech.toLowerCase() === tech.toLowerCase();
-        html += `<button type="button" class="filter-btn ${isActive ? "active" : ""}" data-tech="${escapeHtml(tech)}" onclick="selectTechFilter('${escapeHtml(tech.replace(/'/g, "\\'"))}')')">${escapeHtml(tech)}</button>`;
+        html += `<button type="button" class="filter-btn ${isActive ? "active" : ""}" data-tech="${escapeHtml(tech)}" onclick="handleFilterButtonClick(this)">${escapeHtml(tech)}</button>`;
     });
 
     filterBar.innerHTML = html;
 }
 
+function handleFilterButtonClick(btn) {
+    const tech = btn.getAttribute("data-tech") || "ALL";
+    selectTechFilter(tech);
+}
+
 function selectTechFilter(tech) {
     selectedTech = tech;
     document.querySelectorAll("#techFilterBar .filter-btn").forEach(btn => {
-        const btnTech = btn.getAttribute("data-tech");
+        const btnTech = btn.getAttribute("data-tech") || "";
         btn.classList.toggle("active", btnTech.toLowerCase() === tech.toLowerCase());
     });
     applyProjectFilters();
