@@ -98,7 +98,7 @@ display:block;
 color:#00d4ff;
 font-size:13px;
 font-weight:700;
-margin-top:10px;
+margin-top:12px;
 margin-bottom:4px;
 letter-spacing:.3px;
 }
@@ -115,6 +115,33 @@ font-family:'Segoe UI',sans-serif;
 font-size:14px;
 background:white;
 color:#071426;
+}
+
+.featured-check-row{
+display:flex;
+align-items:center;
+gap:10px;
+background:#0b192e;
+border:1px solid rgba(0,212,255,.25);
+padding:12px 14px;
+border-radius:10px;
+margin-top:6px;
+margin-bottom:14px;
+}
+
+.featured-check-row input[type="checkbox"]{
+width:18px;
+height:18px;
+margin:0;
+accent-color:#00d4ff;
+cursor:pointer;
+}
+
+.featured-check-row label{
+cursor:pointer;
+font-size:14px;
+font-weight:600;
+color:#e2e8f0;
 }
 
 .image-row{
@@ -304,6 +331,11 @@ alert("Login Success");
 
 <input id="projectUrl" placeholder="Project URL (Live App / Dashboard Link - Optional)">
 
+<div class="featured-check-row">
+<input type="checkbox" id="featuredProject">
+<label for="featuredProject">⭐ Mark as Featured / Pinned Project (Highlighted & Sorted Top)</label>
+</div>
+
 <span class="section-label">Slideshow Images (Up to 5 Images + Live Preview)</span>
 
 <div class="image-row">
@@ -341,9 +373,15 @@ alert("Login Success");
 </div>
 </div>
 
-<span class="section-label">Overview</span>
+<span class="section-label">Case Study & Overview</span>
 
-<textarea id="projectOverview" placeholder="Project Overview" rows="6"></textarea>
+<textarea id="projectOverview" placeholder="Project Overview" rows="5"></textarea>
+
+<textarea id="keyFeatures" placeholder="Key Features (one per line - Optional)" rows="4"></textarea>
+
+<textarea id="businessImpact" placeholder="Business Impact / Outcome (Optional)" rows="3"></textarea>
+
+<textarea id="architecture" placeholder="Architecture / Tools Used / Data Flow (Optional)" rows="3"></textarea>
 
 <div class="action-row">
 <button type="button" class="primary-btn" id="saveBtn" onclick="saveProject()">Add Project</button>
@@ -363,7 +401,7 @@ Enter the latest counts to update your Google Sheet <code>Stats</code> tab.
 <div class="stats-grid">
 <div class="stat-field">
 <label for="statProjects">Projects</label>
-<input id="statProjects" type="number" min="0" placeholder="e.g., 15">
+<input id="statProjects" type="number" min="0" placeholder="e.g., 8">
 </div>
 
 <div class="stat-field">
@@ -440,12 +478,16 @@ function clearProjectForm() {
     document.getElementById("projectName").value = "";
     document.getElementById("technology").value = "";
     document.getElementById("projectUrl").value = "";
+    document.getElementById("featuredProject").checked = false;
     document.getElementById("imageUrl").value = "";
     document.getElementById("imageUrl2").value = "";
     document.getElementById("imageUrl3").value = "";
     document.getElementById("imageUrl4").value = "";
     document.getElementById("imageUrl5").value = "";
     document.getElementById("projectOverview").value = "";
+    document.getElementById("keyFeatures").value = "";
+    document.getElementById("businessImpact").value = "";
+    document.getElementById("architecture").value = "";
 
     [1, 2, 3, 4, 5].forEach(slot => updateImagePreview(slot));
 }
@@ -453,6 +495,8 @@ function clearProjectForm() {
 async function saveProject(){
     const saveBtn = document.getElementById("saveBtn");
     hideStatus();
+
+    const isFeatured = document.getElementById("featuredProject").checked;
 
     const data = {
         type: "project",
@@ -464,7 +508,11 @@ async function saveProject(){
         ImageURL4: document.getElementById("imageUrl4").value.trim(),
         ImageURL5: document.getElementById("imageUrl5").value.trim(),
         ProjectURL: document.getElementById("projectUrl").value.trim(),
-        ProjectOverview: document.getElementById("projectOverview").value.trim()
+        ProjectOverview: document.getElementById("projectOverview").value.trim(),
+        Featured: isFeatured ? "Yes" : "No",
+        KeyFeatures: document.getElementById("keyFeatures").value.trim(),
+        BusinessImpact: document.getElementById("businessImpact").value.trim(),
+        Architecture: document.getElementById("architecture").value.trim()
     };
 
     if(!data.ProjectName){
