@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
 <title>HS Admin Panel</title>
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-
 *{
 box-sizing:border-box;
 margin:0;
@@ -23,7 +20,7 @@ color:white;
 }
 
 .container{
-max-width:800px;
+max-width:840px;
 margin:auto;
 }
 
@@ -36,6 +33,11 @@ gap:12px;
 margin-bottom:22px;
 }
 
+h1{
+color:#00d4ff;
+font-size:32px;
+}
+
 .back-link{
 color:#00d4ff;
 text-decoration:none;
@@ -43,10 +45,36 @@ font-weight:600;
 border:1px solid rgba(0,212,255,.35);
 padding:8px 16px;
 border-radius:8px;
+transition:.2s;
 }
 
 .back-link:hover{
 background:rgba(0,212,255,.12);
+}
+
+.tab-bar{
+display:flex;
+gap:10px;
+margin-bottom:18px;
+flex-wrap:wrap;
+}
+
+.tab-btn{
+background:#10233d;
+color:#cbd5e1;
+border:1px solid rgba(0,212,255,.25);
+padding:10px 18px;
+border-radius:10px;
+font-weight:600;
+font-size:14px;
+cursor:pointer;
+transition:.2s;
+}
+
+.tab-btn.active{
+background:#00d4ff;
+color:#071426;
+border-color:#00d4ff;
 }
 
 .card{
@@ -54,6 +82,15 @@ background:#10233d;
 padding:28px;
 border-radius:15px;
 border:1px solid rgba(0,212,255,.18);
+box-shadow:0 14px 30px rgba(0,0,0,.3);
+}
+
+.panel-section{
+display:none;
+}
+
+.panel-section.active{
+display:block;
 }
 
 .section-label{
@@ -61,23 +98,89 @@ display:block;
 color:#00d4ff;
 font-size:13px;
 font-weight:700;
-margin-top:8px;
+margin-top:10px;
 margin-bottom:4px;
+letter-spacing:.3px;
 }
 
 input,
 textarea{
 width:100%;
-padding:12px;
+padding:12px 14px;
 margin-top:6px;
 margin-bottom:14px;
 border:none;
 border-radius:8px;
 font-family:'Segoe UI',sans-serif;
 font-size:14px;
+background:white;
+color:#071426;
 }
 
-button{
+.image-row{
+background:#0b192e;
+border:1px solid rgba(255,255,255,.07);
+border-radius:10px;
+padding:12px 14px;
+margin-bottom:12px;
+}
+
+.image-row-top{
+display:grid;
+grid-template-columns:1fr 96px;
+gap:12px;
+align-items:center;
+}
+
+.image-row-top input{
+margin-top:0;
+margin-bottom:0;
+}
+
+.thumb-preview{
+width:96px;
+height:60px;
+border-radius:8px;
+background:#071426;
+border:1px dashed rgba(0,212,255,.3);
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+color:#64748b;
+text-align:center;
+}
+
+.thumb-preview img{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block;
+}
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:14px;
+margin-top:10px;
+}
+
+.stat-field label{
+display:block;
+font-size:13px;
+color:#cbd5e1;
+font-weight:600;
+}
+
+.action-row{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-top:8px;
+}
+
+button.primary-btn{
 background:#00d4ff;
 color:#071426;
 border:none;
@@ -89,29 +192,74 @@ font-size:15px;
 transition:.2s;
 }
 
-button:hover{
+button.primary-btn:hover{
 opacity:.92;
 transform:translateY(-1px);
 }
 
-button:disabled{
+button.primary-btn:disabled{
 opacity:.6;
 cursor:not-allowed;
+transform:none;
 }
 
-h1{
-color:#00d4ff;
-font-size:32px;
+button.secondary-btn{
+background:rgba(255,255,255,.08);
+color:#e2e8f0;
+border:1px solid rgba(255,255,255,.16);
+padding:12px 20px;
+font-weight:600;
+border-radius:8px;
+cursor:pointer;
+font-size:14px;
+transition:.2s;
 }
 
+button.secondary-btn:hover{
+background:rgba(255,255,255,.15);
+}
+
+.status-banner{
+display:none;
+padding:13px 16px;
+border-radius:10px;
+margin-bottom:18px;
+font-size:14px;
+font-weight:600;
+line-height:1.5;
+}
+
+.status-banner.show{
+display:block;
+}
+
+.status-banner.success{
+background:rgba(16,185,129,.16);
+border:1px solid rgba(52,211,153,.5);
+color:#6ee7b7;
+}
+
+.status-banner.error{
+background:rgba(239,68,68,.16);
+border:1px solid rgba(248,113,113,.5);
+color:#fca5a5;
+}
+
+@media(max-width:560px){
+.image-row-top{
+grid-template-columns:1fr;
+}
+.thumb-preview{
+width:100%;
+height:130px;
+}
+}
 </style>
-
 </head>
 
 <body>
 
 <script>
-
 const username = prompt("Username");
 
 if(username !== "HS style"){
@@ -127,7 +275,6 @@ if(password !== "HS@styles123"){
 }
 
 alert("Login Success");
-
 </script>
 
 <div class="container">
@@ -137,123 +284,257 @@ alert("Login Success");
 <a href="index.html#projects" class="back-link">← Back to Website</a>
 </div>
 
+<div class="tab-bar">
+<button type="button" class="tab-btn active" id="tabProject" onclick="switchTab('project')">+ Add Project</button>
+<button type="button" class="tab-btn" id="tabStats" onclick="switchTab('stats')">📊 Update Stats</button>
+</div>
+
+<div id="statusBanner" class="status-banner" role="alert"></div>
+
 <div class="card">
+
+<!-- Add Project Section -->
+<div class="panel-section active" id="sectionProject">
 
 <span class="section-label">Project Details</span>
 
-<input
-id="projectName"
-placeholder="Project Name">
+<input id="projectName" placeholder="Project Name">
 
-<input
-id="technology"
-placeholder="Technology">
+<input id="technology" placeholder="Technology (e.g., Power BI, DAX, SharePoint)">
 
-<input
-id="projectUrl"
-placeholder="Project URL (Live App / Dashboard Link)">
+<input id="projectUrl" placeholder="Project URL (Live App / Dashboard Link - Optional)">
 
-<span class="section-label">Slideshow Images (Up to 5 Images)</span>
+<span class="section-label">Slideshow Images (Up to 5 Images + Live Preview)</span>
 
-<input
-id="imageUrl"
-placeholder="Image URL 1 (Main / Slide 1)">
+<div class="image-row">
+<div class="image-row-top">
+<input id="imageUrl" placeholder="Image URL 1 (Main / Slide 1)" oninput="updateImagePreview(1)">
+<div class="thumb-preview" id="previewBox1">Slide 1</div>
+</div>
+</div>
 
-<input
-id="imageUrl2"
-placeholder="Image URL 2 (Slide 2 - Optional)">
+<div class="image-row">
+<div class="image-row-top">
+<input id="imageUrl2" placeholder="Image URL 2 (Slide 2 - Optional)" oninput="updateImagePreview(2)">
+<div class="thumb-preview" id="previewBox2">Slide 2</div>
+</div>
+</div>
 
-<input
-id="imageUrl3"
-placeholder="Image URL 3 (Slide 3 - Optional)">
+<div class="image-row">
+<div class="image-row-top">
+<input id="imageUrl3" placeholder="Image URL 3 (Slide 3 - Optional)" oninput="updateImagePreview(3)">
+<div class="thumb-preview" id="previewBox3">Slide 3</div>
+</div>
+</div>
 
-<input
-id="imageUrl4"
-placeholder="Image URL 4 (Slide 4 - Optional)">
+<div class="image-row">
+<div class="image-row-top">
+<input id="imageUrl4" placeholder="Image URL 4 (Slide 4 - Optional)" oninput="updateImagePreview(4)">
+<div class="thumb-preview" id="previewBox4">Slide 4</div>
+</div>
+</div>
 
-<input
-id="imageUrl5"
-placeholder="Image URL 5 (Slide 5 - Optional)">
+<div class="image-row">
+<div class="image-row-top">
+<input id="imageUrl5" placeholder="Image URL 5 (Slide 5 - Optional)" oninput="updateImagePreview(5)">
+<div class="thumb-preview" id="previewBox5">Slide 5</div>
+</div>
+</div>
 
 <span class="section-label">Overview</span>
 
-<textarea
-id="projectOverview"
-placeholder="Project Overview"
-rows="6"></textarea>
+<textarea id="projectOverview" placeholder="Project Overview" rows="6"></textarea>
 
-<button id="saveBtn" onclick="saveProject()">
-Add Project
-</button>
+<div class="action-row">
+<button type="button" class="primary-btn" id="saveBtn" onclick="saveProject()">Add Project</button>
+<button type="button" class="secondary-btn" onclick="clearProjectForm()">Clear Form</button>
+</div>
 
 </div>
 
+<!-- Update Stats Section -->
+<div class="panel-section" id="sectionStats">
+
+<span class="section-label">Update Homepage Counters (Stats Sheet)</span>
+<p style="color:#94a3b8;font-size:13px;margin-bottom:10px;">
+Enter the latest counts to update your Google Sheet <code>Stats</code> tab.
+</p>
+
+<div class="stats-grid">
+<div class="stat-field">
+<label for="statProjects">Projects</label>
+<input id="statProjects" type="number" min="0" placeholder="e.g., 15">
+</div>
+
+<div class="stat-field">
+<label for="statDashboards">Dashboards</label>
+<input id="statDashboards" type="number" min="0" placeholder="e.g., 25">
+</div>
+
+<div class="stat-field">
+<label for="statAutomations">Automations</label>
+<input id="statAutomations" type="number" min="0" placeholder="e.g., 30">
+</div>
+
+<div class="stat-field">
+<label for="statBusiness">Business Solutions</label>
+<input id="statBusiness" type="number" min="0" placeholder="e.g., 10">
+</div>
+</div>
+
+<div class="action-row">
+<button type="button" class="primary-btn" id="saveStatsBtn" onclick="saveStats()">Update Stats</button>
+</div>
+
+</div>
+
+</div>
 </div>
 
 <script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec";
 
-async function saveProject(){
-
-const saveBtn = document.getElementById("saveBtn");
-
-const data = {
-ProjectName: document.getElementById("projectName").value.trim(),
-Technology: document.getElementById("technology").value.trim(),
-ImageURL: document.getElementById("imageUrl").value.trim(),
-ImageURL2: document.getElementById("imageUrl2").value.trim(),
-ImageURL3: document.getElementById("imageUrl3").value.trim(),
-ImageURL4: document.getElementById("imageUrl4").value.trim(),
-ImageURL5: document.getElementById("imageUrl5").value.trim(),
-ProjectURL: document.getElementById("projectUrl").value.trim(),
-ProjectOverview: document.getElementById("projectOverview").value.trim()
+const inputIdsBySlot = {
+    1: "imageUrl",
+    2: "imageUrl2",
+    3: "imageUrl3",
+    4: "imageUrl4",
+    5: "imageUrl5"
 };
 
-if(!data.ProjectName){
-    alert("Please enter a Project Name");
-    return;
+function showStatus(type, text) {
+    const banner = document.getElementById("statusBanner");
+    banner.className = `status-banner show ${type}`;
+    banner.innerText = text;
 }
 
-saveBtn.disabled = true;
-saveBtn.innerText = "Saving...";
-
-try{
-
-await fetch(
-"https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec",
-{
-method:"POST",
-body:JSON.stringify(data)
-}
-);
-
-alert("Project Added Successfully");
-
-document.getElementById("projectName").value = "";
-document.getElementById("technology").value = "";
-document.getElementById("imageUrl").value = "";
-document.getElementById("imageUrl2").value = "";
-document.getElementById("imageUrl3").value = "";
-document.getElementById("imageUrl4").value = "";
-document.getElementById("imageUrl5").value = "";
-document.getElementById("projectUrl").value = "";
-document.getElementById("projectOverview").value = "";
-
-}
-catch(err){
-
-alert("Error Saving Project");
-console.error(err);
-
-}
-finally{
-
-saveBtn.disabled = false;
-saveBtn.innerText = "Add Project";
-
+function hideStatus() {
+    const banner = document.getElementById("statusBanner");
+    banner.className = "status-banner";
+    banner.innerText = "";
 }
 
+function switchTab(tab) {
+    hideStatus();
+    const isProject = tab === "project";
+    document.getElementById("tabProject").classList.toggle("active", isProject);
+    document.getElementById("tabStats").classList.toggle("active", !isProject);
+    document.getElementById("sectionProject").classList.toggle("active", isProject);
+    document.getElementById("sectionStats").classList.toggle("active", !isProject);
 }
 
+function updateImagePreview(slot) {
+    const inputEl = document.getElementById(inputIdsBySlot[slot]);
+    const boxEl = document.getElementById(`previewBox${slot}`);
+    const url = (inputEl.value || "").trim();
+
+    if (!url) {
+        boxEl.innerHTML = `Slide ${slot}`;
+        return;
+    }
+
+    boxEl.innerHTML = `<img src="${url.replace(/"/g, "&quot;")}" alt="Slide ${slot} preview" onerror="this.parentElement.innerHTML='Invalid URL'">`;
+}
+
+function clearProjectForm() {
+    document.getElementById("projectName").value = "";
+    document.getElementById("technology").value = "";
+    document.getElementById("projectUrl").value = "";
+    document.getElementById("imageUrl").value = "";
+    document.getElementById("imageUrl2").value = "";
+    document.getElementById("imageUrl3").value = "";
+    document.getElementById("imageUrl4").value = "";
+    document.getElementById("imageUrl5").value = "";
+    document.getElementById("projectOverview").value = "";
+
+    [1, 2, 3, 4, 5].forEach(slot => updateImagePreview(slot));
+}
+
+async function saveProject(){
+    const saveBtn = document.getElementById("saveBtn");
+    hideStatus();
+
+    const data = {
+        type: "project",
+        ProjectName: document.getElementById("projectName").value.trim(),
+        Technology: document.getElementById("technology").value.trim(),
+        ImageURL: document.getElementById("imageUrl").value.trim(),
+        ImageURL2: document.getElementById("imageUrl2").value.trim(),
+        ImageURL3: document.getElementById("imageUrl3").value.trim(),
+        ImageURL4: document.getElementById("imageUrl4").value.trim(),
+        ImageURL5: document.getElementById("imageUrl5").value.trim(),
+        ProjectURL: document.getElementById("projectUrl").value.trim(),
+        ProjectOverview: document.getElementById("projectOverview").value.trim()
+    };
+
+    if(!data.ProjectName){
+        showStatus("error", "Please enter a Project Name before saving.");
+        document.getElementById("projectName").focus();
+        return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.innerText = "Saving...";
+
+    try{
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify(data)
+        });
+
+        showStatus("success", `Project "${data.ProjectName}" added successfully!`);
+        clearProjectForm();
+    }
+    catch(err){
+        showStatus("error", "Error saving project. Please check your connection or Apps Script deployment.");
+        console.error(err);
+    }
+    finally{
+        saveBtn.disabled = false;
+        saveBtn.innerText = "Add Project";
+    }
+}
+
+async function saveStats(){
+    const saveStatsBtn = document.getElementById("saveStatsBtn");
+    hideStatus();
+
+    const projectsVal = document.getElementById("statProjects").value.trim();
+    const dashboardsVal = document.getElementById("statDashboards").value.trim();
+    const automationsVal = document.getElementById("statAutomations").value.trim();
+    const businessVal = document.getElementById("statBusiness").value.trim();
+
+    if (!projectsVal && !dashboardsVal && !automationsVal && !businessVal) {
+        showStatus("error", "Please enter at least one stat value to update.");
+        return;
+    }
+
+    saveStatsBtn.disabled = true;
+    saveStatsBtn.innerText = "Updating...";
+
+    const payload = {
+        type: "stats",
+        Projects: projectsVal,
+        Dashboards: dashboardsVal,
+        Automations: automationsVal,
+        BusinessSolutions: businessVal
+    };
+
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+
+        showStatus("success", "Stats updated successfully!");
+    } catch (err) {
+        showStatus("error", "Error updating stats. Make sure your Code.gs supports type === 'stats'.");
+        console.error(err);
+    } finally {
+        saveStatsBtn.disabled = false;
+        saveStatsBtn.innerText = "Update Stats";
+    }
+}
 </script>
 
 </body>
