@@ -1059,7 +1059,7 @@ bottom:172px;
 right:25px;
 width:350px;
 max-width:calc(100vw - 32px);
-height:440px;
+height:465px;
 max-height:calc(100vh - 190px);
 background:#0c1d34;
 border:1px solid rgba(0,212,255,.45);
@@ -1144,6 +1144,33 @@ background:#00d4ff;
 color:#071426;
 font-weight:600;
 border-bottom-right-radius:4px;
+}
+
+.ai-quick-questions{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+padding:8px 12px;
+background:#09182c;
+border-top:1px solid rgba(255,255,255,.06);
+}
+
+.ai-quick-btn{
+background:rgba(0,212,255,.12);
+color:#7dd3fc;
+border:1px solid rgba(0,212,255,.35);
+border-radius:999px;
+padding:5px 10px;
+font-size:11.5px;
+font-weight:600;
+cursor:pointer;
+transition:.15s;
+}
+
+.ai-quick-btn:hover{
+background:#00d4ff;
+color:#071426;
+border-color:#00d4ff;
 }
 
 .ai-chat-form{
@@ -1609,6 +1636,12 @@ LinkedIn Profile
 </div>
 <div class="ai-chat-body" id="aiChatBody">
 <div class="ai-bubble bot">Hi! Ask me anything about HS Automation Solutions, our projects, or services.</div>
+</div>
+<div class="ai-quick-questions" id="aiQuickQuestions">
+<button type="button" class="ai-quick-btn" onclick="askQuickQuestion('What services do you offer?')">Services</button>
+<button type="button" class="ai-quick-btn" onclick="askQuickQuestion('What projects have you built?')">Projects</button>
+<button type="button" class="ai-quick-btn" onclick="askQuickQuestion('Tell me about the 3W Management System demo')">3W Demo</button>
+<button type="button" class="ai-quick-btn" onclick="askQuickQuestion('How can I contact Hasitha?')">Contact</button>
 </div>
 <form class="ai-chat-form" onsubmit="sendGeminiChat(event)">
 <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Ask something..." maxlength="500" autocomplete="off" required>
@@ -2157,6 +2190,16 @@ function toggleAiChatPopup() {
     const isOpen = popup.classList.toggle("open");
     if (isOpen) {
         setTimeout(() => document.getElementById("aiChatInput").focus(), 100);
+    }
+}
+
+function askQuickQuestion(questionText) {
+    const inp = document.getElementById("aiChatInput");
+    if (!inp) return;
+    inp.value = questionText;
+    const formEl = inp.closest("form");
+    if (formEl) {
+        formEl.dispatchEvent(new Event("submit", { cancelable: true }));
     }
 }
 
