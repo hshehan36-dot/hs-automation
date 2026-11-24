@@ -394,7 +394,6 @@ display:none;
 
 <ul>
 <li><a href="#about">About</a></li>
-<li><a href="#demo">3W Demo</a></li>
 <li><a href="#services">Services</a></li>
 <li><a href="#projects">Projects</a></li>
 <li><a href="#skills">Skills</a></li>
@@ -412,9 +411,6 @@ Power Apps • Power BI • Power Automate • SharePoint • Business Automatio
 </p>
 
 <div class="hero-actions">
-<a href="https://hshehan36-dot.github.io/3w-management-system/" target="_blank" rel="noopener" class="btn">
-Try 3W System Demo
-</a>
 <a href="#contact" class="btn-outline">
 Let's Work Together
 </a>
@@ -681,25 +677,6 @@ counters.forEach(counter => {
 
 });
 
-const featuredDemoHtml = `
-<div class="project">
-    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
-         alt="3W Management System">
-    <div class="project-content">
-        <h3>3W Management System (Live Trial)</h3>
-        <p>
-            <strong>Web App • Workflow &amp; Email Automation</strong>
-        </p>
-        <a href="https://hshehan36-dot.github.io/3w-management-system/"
-           target="_blank"
-           rel="noopener"
-           class="btn">
-           Use 3W System Demo
-        </a>
-    </div>
-</div>
-`;
-
 // Load Projects From Google Sheet
 async function loadProjects() {
 
@@ -717,7 +694,7 @@ async function loadProjects() {
 
         const data = await response.json();
 
-        projectsContainer.innerHTML = featuredDemoHtml;
+        projectsContainer.innerHTML = "";
 
         data.forEach(project => {
 
@@ -753,7 +730,7 @@ async function loadProjects() {
     catch (error) {
 
         projectsContainer.innerHTML =
-        featuredDemoHtml + "<p style='margin-top:15px;'>Unable to load additional projects.</p>";
+        "<p>Unable to load projects.</p>";
 
         console.error(error);
 
