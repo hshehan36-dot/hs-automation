@@ -90,7 +90,7 @@ margin-top:28px;
 
 .btn{
 display:inline-block;
-padding:10px 22px;
+padding:10px 20px;
 background:#00d4ff;
 color:#071426;
 border-radius:50px;
@@ -98,7 +98,7 @@ text-decoration:none;
 font-weight:bold;
 border:none;
 cursor:pointer;
-font-size:14px;
+font-size:13px;
 transition:.25s;
 }
 
@@ -109,7 +109,7 @@ box-shadow:0 8px 20px rgba(0,212,255,.35);
 
 .btn-ghost{
 display:inline-block;
-padding:10px 18px;
+padding:10px 16px;
 background:transparent;
 color:#00d4ff;
 border:1px solid rgba(0,212,255,.45);
@@ -117,7 +117,7 @@ border-radius:50px;
 text-decoration:none;
 font-weight:600;
 cursor:pointer;
-font-size:14px;
+font-size:13px;
 transition:.25s;
 }
 
@@ -268,11 +268,11 @@ color:#00d4ff;
 margin-bottom:10px;
 }
 
-/* Interactive Image-Free Projects Grid */
+/* Interactive Projects Grid with Per-Project Max 5 Image Slideshow */
 .projects{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:25px;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:26px;
 }
 
 .project{
@@ -280,7 +280,7 @@ position:relative;
 background:linear-gradient(160deg,#10233d 0%,#0b192e 100%);
 border:1px solid rgba(0,212,255,.18);
 border-radius:18px;
-padding:26px;
+overflow:hidden;
 display:flex;
 flex-direction:column;
 justify-content:space-between;
@@ -293,12 +293,110 @@ border-color:rgba(0,212,255,.65);
 box-shadow:0 16px 32px rgba(0,0,0,.45), 0 0 0 1px rgba(0,212,255,.2);
 }
 
+.card-slider{
+position:relative;
+width:100%;
+height:210px;
+background:#08162a;
+overflow:hidden;
+}
+
+.card-slider img{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block;
+transition:opacity .35s ease;
+}
+
+.card-slider img.fade{
+opacity:.3;
+}
+
+.card-slide-badge{
+position:absolute;
+top:10px;
+right:10px;
+background:rgba(7,20,38,.82);
+border:1px solid rgba(0,212,255,.35);
+color:#e2e8f0;
+padding:3px 9px;
+border-radius:999px;
+font-size:11px;
+font-weight:700;
+}
+
+.card-slide-btn{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+width:32px;
+height:32px;
+border-radius:50%;
+border:1px solid rgba(0,212,255,.4);
+background:rgba(7,20,38,.78);
+color:#00d4ff;
+font-size:18px;
+line-height:1;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:.2s;
+}
+
+.card-slide-btn:hover{
+background:#00d4ff;
+color:#071426;
+}
+
+.card-slide-btn.prev{left:10px;}
+.card-slide-btn.next{right:10px;}
+
+.card-slide-dots{
+position:absolute;
+bottom:9px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:6px;
+background:rgba(7,20,38,.65);
+padding:4px 8px;
+border-radius:999px;
+}
+
+.card-dot{
+width:7px;
+height:7px;
+border-radius:50%;
+border:none;
+background:#47648f;
+cursor:pointer;
+padding:0;
+transition:.2s;
+}
+
+.card-dot.active{
+width:16px;
+border-radius:999px;
+background:#00d4ff;
+}
+
+.project-body{
+padding:22px 24px 24px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+flex:1;
+}
+
 .project-top{
 display:flex;
 justify-content:space-between;
 align-items:center;
 gap:10px;
 margin-bottom:14px;
+flex-wrap:wrap;
 }
 
 .project-index{
@@ -672,6 +770,7 @@ Launch 3W Demo →
 </div>
 <div class="modal-body" id="modalOverview"></div>
 <div class="modal-footer">
+<a class="btn-ghost" id="modalLiveLink" href="#" target="_blank" rel="noopener" style="display:none;">Live App / Report ↗</a>
 <button class="btn-ghost" onclick="closeProjectModal()">Close</button>
 <a class="btn" id="modalFullLink" href="#">Open Full Details →</a>
 </div>
@@ -740,7 +839,12 @@ LinkedIn Profile
 <a class="whatsapp" href="https://wa.me/94769176616" target="_blank">💬</a>
 
 <script>
+const SHEET_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1";
+const STATS_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Stats";
+
 let loadedProjectsData = [];
+const cardSlideStates = {};
+let cardAutoTimer = null;
 
 function escapeHtml(str = "") {
     return String(str)
@@ -748,6 +852,74 @@ function escapeHtml(str = "") {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+}
+
+// Extract up to 5 image URLs for a single project (ImageURL, ImageURL2..5 or Image1..5)
+function getProjectImages(project) {
+    const urls = [];
+
+    if (project.ImageURL) {
+        String(project.ImageURL)
+            .split(/[\n,]+/)
+            .map(u => u.trim())
+            .filter(Boolean)
+            .forEach(u => urls.push(u));
+    }
+
+    ["ImageURL2", "ImageURL3", "ImageURL4", "ImageURL5", "Image1", "Image2", "Image3", "Image4", "Image5"].forEach(col => {
+        if (project[col] && String(project[col]).trim()) {
+            urls.push(String(project[col]).trim());
+        }
+    });
+
+    return [...new Set(urls)].slice(0, 5);
+}
+
+function setCardSlide(projIdx, targetSlideIdx) {
+    const state = cardSlideStates[projIdx];
+    if (!state || !state.images.length) return;
+
+    state.index = (targetSlideIdx + state.images.length) % state.images.length;
+    const imgEl = document.getElementById(`cardImg-${projIdx}`);
+    const counterEl = document.getElementById(`cardCounter-${projIdx}`);
+    const dotsWrap = document.getElementById(`cardDots-${projIdx}`);
+
+    if (imgEl) {
+        imgEl.classList.add("fade");
+        setTimeout(() => {
+            imgEl.src = state.images[state.index];
+            imgEl.classList.remove("fade");
+        }, 120);
+    }
+
+    if (counterEl) {
+        counterEl.innerText = `${state.index + 1} / ${state.images.length}`;
+    }
+
+    if (dotsWrap) {
+        [...dotsWrap.children].forEach((dot, i) => {
+            dot.classList.toggle("active", i === state.index);
+        });
+    }
+}
+
+function stepCardSlide(projIdx, delta) {
+    const state = cardSlideStates[projIdx];
+    if (!state || !state.images.length) return;
+    setCardSlide(projIdx, state.index + delta);
+}
+
+function startCardSlideshows() {
+    clearInterval(cardAutoTimer);
+    cardAutoTimer = setInterval(() => {
+        Object.keys(cardSlideStates).forEach(key => {
+            const idx = Number(key);
+            const state = cardSlideStates[idx];
+            if (state && state.images.length > 1) {
+                setCardSlide(idx, state.index + 1);
+            }
+        });
+    }, 3500);
 }
 
 function animateCounter(counter) {
@@ -769,17 +941,17 @@ function animateCounter(counter) {
     update();
 }
 
-// Load Projects From Google Sheet (No Images + Interactive Cards & Quick View)
+// Load Projects From Google Sheet
 async function loadProjects() {
     const projectsContainer = document.getElementById("projectsContainer");
     projectsContainer.innerHTML = "<p>Loading Projects...</p>";
 
     try {
-        const response = await fetch(
-            "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1"
-        );
+        const response = await fetch(SHEET_API);
         const data = await response.json();
-        loadedProjectsData = Array.isArray(data) ? data : [];
+        loadedProjectsData = Array.isArray(data)
+            ? data.filter(row => (row.ProjectName || "").trim() !== "")
+            : [];
 
         if (!loadedProjectsData.length) {
             projectsContainer.innerHTML = "<p>No projects available right now.</p>";
@@ -787,34 +959,74 @@ async function loadProjects() {
         }
 
         projectsContainer.innerHTML = "";
+        Object.keys(cardSlideStates).forEach(k => delete cardSlideStates[k]);
 
         loadedProjectsData.forEach((project, idx) => {
-            const name = project.ProjectName || "Untitled Project";
-            const tech = project.Technology || "Automation";
+            const name = (project.ProjectName || "Untitled Project").trim();
+            const tech = (project.Technology || "Automation").trim();
             const overview = (project["Project Overview"] || "").trim();
+            const projectUrl = (project.ProjectURL || "").trim();
+            const images = getProjectImages(project);
             const summaryText = overview || "Click View Project to explore full solution details, workflow, and outcomes.";
             const detailsUrl = `project.html?project=${encodeURIComponent(name)}`;
 
+            cardSlideStates[idx] = { images, index: 0 };
+
+            let sliderHtml = "";
+            if (images.length > 0) {
+                const hasMultiple = images.length > 1;
+                const dotsHtml = hasMultiple
+                    ? `<div class="card-slide-dots" id="cardDots-${idx}">${
+                        images.map((_, dIdx) =>
+                            `<button type="button" class="card-dot ${dIdx === 0 ? "active" : ""}" onclick="setCardSlide(${idx}, ${dIdx})" aria-label="Slide ${dIdx + 1}"></button>`
+                        ).join("")
+                    }</div>`
+                    : "";
+
+                const navHtml = hasMultiple
+                    ? `<button type="button" class="card-slide-btn prev" onclick="stepCardSlide(${idx}, -1)" aria-label="Previous image">‹</button>
+                       <button type="button" class="card-slide-btn next" onclick="stepCardSlide(${idx}, 1)" aria-label="Next image">›</button>`
+                    : "";
+
+                sliderHtml = `
+                <div class="card-slider">
+                    <img id="cardImg-${idx}" src="${escapeHtml(images[0])}" alt="${escapeHtml(name)}">
+                    <span class="card-slide-badge" id="cardCounter-${idx}">1 / ${images.length}</span>
+                    ${navHtml}
+                    ${dotsHtml}
+                </div>`;
+            }
+
+            const liveBtnHtml = projectUrl
+                ? `<a href="${escapeHtml(projectUrl)}" target="_blank" rel="noopener" class="btn-ghost">Live App ↗</a>`
+                : "";
+
             projectsContainer.innerHTML += `
             <div class="project">
-                <div>
-                    <div class="project-top">
-                        <span class="project-index">PROJECT #${String(idx + 1).padStart(2, "0")}</span>
-                        <span class="tech-badge">${escapeHtml(tech)}</span>
+                ${sliderHtml}
+                <div class="project-body">
+                    <div>
+                        <div class="project-top">
+                            <span class="project-index">PROJECT #${String(idx + 1).padStart(2, "0")}</span>
+                            <span class="tech-badge">${escapeHtml(tech)}</span>
+                        </div>
+                        <div class="project-content">
+                            <h3>${escapeHtml(name)}</h3>
+                            <p class="project-summary">${escapeHtml(summaryText)}</p>
+                        </div>
                     </div>
-                    <div class="project-content">
-                        <h3>${escapeHtml(name)}</h3>
-                        <p class="project-summary">${escapeHtml(summaryText)}</p>
-                    </div>
-                </div>
 
-                <div class="project-actions">
-                    <a href="${detailsUrl}" class="btn">View Project</a>
-                    <button type="button" class="btn-ghost" onclick="openProjectModal(${idx})">Quick Preview</button>
+                    <div class="project-actions">
+                        <a href="${detailsUrl}" class="btn">View Project</a>
+                        <button type="button" class="btn-ghost" onclick="openProjectModal(${idx})">Quick Preview</button>
+                        ${liveBtnHtml}
+                    </div>
                 </div>
             </div>
             `;
         });
+
+        startCardSlideshows();
     } catch (error) {
         projectsContainer.innerHTML = "<p>Unable to load projects.</p>";
         console.error(error);
@@ -825,14 +1037,23 @@ function openProjectModal(index) {
     const project = loadedProjectsData[index];
     if (!project) return;
 
-    const name = project.ProjectName || "Untitled Project";
-    const tech = project.Technology || "Automation";
+    const name = (project.ProjectName || "Untitled Project").trim();
+    const tech = (project.Technology || "Automation").trim();
     const overview = (project["Project Overview"] || "No additional overview provided.").trim();
+    const projectUrl = (project.ProjectURL || "").trim();
 
     document.getElementById("modalTech").innerText = tech;
     document.getElementById("modalTitle").innerText = name;
     document.getElementById("modalOverview").innerText = overview;
     document.getElementById("modalFullLink").href = `project.html?project=${encodeURIComponent(name)}`;
+
+    const liveLinkEl = document.getElementById("modalLiveLink");
+    if (projectUrl) {
+        liveLinkEl.href = projectUrl;
+        liveLinkEl.style.display = "inline-block";
+    } else {
+        liveLinkEl.style.display = "none";
+    }
 
     document.getElementById("projectModal").classList.add("active");
 }
@@ -858,9 +1079,7 @@ async function loadStats() {
     const counters = document.querySelectorAll(".stat");
 
     try {
-        const response = await fetch(
-            "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Stats"
-        );
+        const response = await fetch(STATS_API);
         const data = await response.json();
 
         if (data && data[0]) {
