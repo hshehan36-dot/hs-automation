@@ -19,14 +19,32 @@ background:#071426;
 color:white;
 }
 
+/* Top Scroll Progress Bar */
+.scroll-progress-wrap{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:3px;
+background:rgba(255,255,255,.06);
+z-index:1200;
+}
+
+.scroll-progress-bar{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#00d4ff,#38bdf8,#a5f3fc);
+transition:width .1s linear;
+}
+
 /* Navbar & Mobile Menu */
 nav{
 position:fixed;
 width:100%;
-top:0;
+top:3px;
 background:rgba(0,0,0,.82);
 backdrop-filter: blur(10px);
-padding:15px 8%;
+padding:14px 8%;
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -78,7 +96,7 @@ justify-content:center;
 .mobile-menu{
 display:none;
 position:fixed;
-top:68px;
+top:70px;
 left:0;
 right:0;
 background:rgba(6,18,34,.97);
@@ -679,7 +697,7 @@ display:flex;
 background:#0f233e;
 border:1px solid rgba(0,212,255,.35);
 border-radius:20px;
-max-width:620px;
+max-width:640px;
 width:100%;
 padding:30px;
 box-shadow:0 20px 50px rgba(0,0,0,.6);
@@ -734,7 +752,7 @@ margin:16px 0 22px;
 .modal-footer{
 display:flex;
 justify-content:flex-end;
-gap:12px;
+gap:10px;
 flex-wrap:wrap;
 }
 
@@ -761,6 +779,54 @@ overflow:hidden;
 .fill{
 height:100%;
 background:#00d4ff;
+}
+
+/* Testimonials */
+.testimonials-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:24px;
+}
+
+.testimonial-card{
+background:linear-gradient(160deg,#0f233e 0%,#0b192e 100%);
+border:1px solid rgba(0,212,255,.2);
+border-radius:18px;
+padding:26px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+gap:18px;
+transition:.25s;
+}
+
+.testimonial-card:hover{
+transform:translateY(-6px);
+border-color:rgba(0,212,255,.55);
+}
+
+.testimonial-quote{
+color:#e2e8f0;
+font-size:15px;
+line-height:1.75;
+font-style:italic;
+}
+
+.testimonial-author{
+border-top:1px solid rgba(255,255,255,.08);
+padding-top:12px;
+}
+
+.testimonial-name{
+font-weight:700;
+color:#00d4ff;
+font-size:15px;
+}
+
+.testimonial-role{
+color:#94a3b8;
+font-size:13px;
+margin-top:2px;
 }
 
 /* Contact Form & Feedback Banner */
@@ -854,6 +920,38 @@ text-decoration:none;
 border-radius:8px;
 }
 
+/* Back-to-Top & WhatsApp Floating Buttons */
+.back-to-top{
+position:fixed;
+bottom:102px;
+right:31px;
+width:52px;
+height:52px;
+border-radius:50%;
+border:1px solid rgba(0,212,255,.45);
+background:#10233d;
+color:#00d4ff;
+font-size:22px;
+font-weight:bold;
+cursor:pointer;
+display:none;
+align-items:center;
+justify-content:center;
+box-shadow:0 8px 20px rgba(0,0,0,.45);
+z-index:900;
+transition:.2s;
+}
+
+.back-to-top.visible{
+display:flex;
+}
+
+.back-to-top:hover{
+background:#00d4ff;
+color:#071426;
+transform:translateY(-3px);
+}
+
 .whatsapp{
 position:fixed;
 bottom:25px;
@@ -900,6 +998,10 @@ display:flex;
 
 <body>
 
+<div class="scroll-progress-wrap" aria-hidden="true">
+<div class="scroll-progress-bar" id="scrollProgressBar"></div>
+</div>
+
 <nav>
 <div class="logo">HS Automation</div>
 
@@ -908,6 +1010,7 @@ display:flex;
 <li><a href="#services">Services</a></li>
 <li><a href="#projects">Projects</a></li>
 <li><a href="#skills">Skills</a></li>
+<li><a href="#testimonials">Feedback</a></li>
 <li><a href="#contact">Contact</a></li>
 <li><a href="#demo">Live Demos</a></li>
 <li><a href="#" onclick="openAdmin(event)">Admin</a></li>
@@ -922,6 +1025,7 @@ display:flex;
 <a href="#services" onclick="closeMobileMenu()">Services</a>
 <a href="#projects" onclick="closeMobileMenu()">Projects</a>
 <a href="#skills" onclick="closeMobileMenu()">Skills</a>
+<a href="#testimonials" onclick="closeMobileMenu()">Feedback</a>
 <a href="#contact" onclick="closeMobileMenu()">Contact</a>
 <a href="#demo" onclick="closeMobileMenu()">Live Demos</a>
 <a href="#" onclick="openAdmin(event)">Admin</a>
@@ -1077,8 +1181,9 @@ oninput="applyProjectFilters()">
 </div>
 <div class="modal-body" id="modalOverview"></div>
 <div class="modal-footer">
+<button type="button" class="btn-ghost" id="modalRequestBtn">Request Similar Solution</button>
 <a class="btn-ghost" id="modalLiveLink" href="#" target="_blank" rel="noopener" style="display:none;">Live App / Report ↗</a>
-<button class="btn-ghost" onclick="closeProjectModal()">Close</button>
+<button type="button" class="btn-ghost" onclick="closeProjectModal()">Close</button>
 <a class="btn" id="modalFullLink" href="#">Open Full Details →</a>
 </div>
 </div>
@@ -1106,6 +1211,43 @@ oninput="applyProjectFilters()">
 <div class="skill">
 <div class="skill-name">SharePoint - 88%</div>
 <div class="bar"><div class="fill" style="width:88%"></div></div>
+</div>
+</div>
+</section>
+
+<!-- Client / Stakeholder Feedback -->
+<section id="testimonials">
+<h2 class="section-title">Client & Team Feedback</h2>
+
+<div class="testimonials-grid">
+<div class="testimonial-card">
+<p class="testimonial-quote">
+"Hasitha turns complex operational tracking sheets into clean, reliable dashboards and automated workflows that save hours of manual follow-up every week."
+</p>
+<div class="testimonial-author">
+<div class="testimonial-name">Operations & Analytics Lead</div>
+<div class="testimonial-role">Enterprise Reporting & Process Automation</div>
+</div>
+</div>
+
+<div class="testimonial-card">
+<p class="testimonial-quote">
+"From structured data modeling and DAX measures to user-friendly intake forms and notifications, the solutions are practical, fast, and easy for teams to adopt."
+</p>
+<div class="testimonial-author">
+<div class="testimonial-name">EHS & Compliance Stakeholder</div>
+<div class="testimonial-role">Digital Tracking & Action Workflows</div>
+</div>
+</div>
+
+<div class="testimonial-card">
+<p class="testimonial-quote">
+"Strong analytical mindset combined with hands-on automation skills—requirements are quickly translated into working tools with clear visibility."
+</p>
+<div class="testimonial-author">
+<div class="testimonial-name">Project Collaborator</div>
+<div class="testimonial-role">Power Platform & Web Automation</div>
+</div>
 </div>
 </div>
 </section>
@@ -1171,7 +1313,8 @@ LinkedIn Profile
 <p style="margin-top:10px;">© 2026 All Rights Reserved</p>
 </div>
 
-<a class="whatsapp" href="https://wa.me/94769176616" target="_blank">💬</a>
+<button type="button" class="back-to-top" id="backToTopBtn" onclick="scrollToTop()" aria-label="Back to top" title="Back to top">↑</button>
+<a class="whatsapp" href="https://wa.me/94769176616" target="_blank" aria-label="WhatsApp">💬</a>
 
 <script>
 const SHEET_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1";
@@ -1182,6 +1325,20 @@ let loadedProjectsData = [];
 let selectedTech = "ALL";
 const cardSlideStates = {};
 let cardAutoTimer = null;
+
+/* Scroll Progress & Back-to-Top */
+window.addEventListener("scroll", () => {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = docHeight > 0 ? Math.min(Math.max((window.scrollY / docHeight) * 100, 0), 100) : 0;
+    document.getElementById("scrollProgressBar").style.width = `${scrolled}%`;
+
+    const topBtn = document.getElementById("backToTopBtn");
+    topBtn.classList.toggle("visible", window.scrollY > 360);
+});
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
 /* Mobile Menu */
 function toggleMobileMenu() {
@@ -1244,6 +1401,29 @@ function splitTechnologies(techStr = "") {
         .map(t => t.trim())
         .filter(Boolean);
 }
+
+/* Request Similar Solution Preset */
+function requestSimilarSolution(projectName, tech) {
+    closeProjectModal();
+    const msgBox = document.getElementById("message");
+    const techNote = tech ? ` (${tech})` : "";
+    msgBox.value = `Hi Hasitha, I'm interested in a solution similar to "${projectName}"${techNote}. Let's discuss requirements and timeline.`;
+    clearFieldError("message");
+    document.getElementById("contact").scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => msgBox.focus(), 350);
+}
+
+/* Apply URL query ?similar=... if coming from project.html */
+(function checkSimilarQuery() {
+    const qParams = new URLSearchParams(window.location.search);
+    const similarName = (qParams.get("similar") || "").trim();
+    const similarTech = (qParams.get("tech") || "").trim();
+    if (similarName) {
+        window.addEventListener("DOMContentLoaded", () => {
+            requestSimilarSolution(similarName, similarTech);
+        });
+    }
+})();
 
 /* Per-Card Slideshow */
 function setCardSlide(projIdx, targetSlideIdx) {
@@ -1535,6 +1715,7 @@ function openProjectModal(index) {
     document.getElementById("modalTitle").innerText = name;
     document.getElementById("modalOverview").innerText = overview;
     document.getElementById("modalFullLink").href = `project.html?project=${encodeURIComponent(name)}`;
+    document.getElementById("modalRequestBtn").onclick = () => requestSimilarSolution(name, tech);
 
     const liveLinkEl = document.getElementById("modalLiveLink");
     if (projectUrl) {
