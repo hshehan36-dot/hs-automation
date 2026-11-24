@@ -53,6 +53,26 @@ transform:translateY(-2px);
 box-shadow:0 8px 18px rgba(0,212,255,.3);
 }
 
+.live-btn{
+display:inline-flex;
+align-items:center;
+gap:8px;
+background:#00d4ff;
+color:#071426;
+padding:11px 22px;
+border-radius:10px;
+text-decoration:none;
+font-weight:700;
+font-size:14px;
+margin-top:16px;
+transition:.2s;
+}
+
+.live-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(0,212,255,.3);
+}
+
 .copy-btn{
 background:#10233d;
 color:#00d4ff;
@@ -94,6 +114,140 @@ h1{
 color:white;
 font-size:40px;
 line-height:1.2;
+}
+
+.meta-row{
+color:#94a3b8;
+font-size:14px;
+margin-top:10px;
+}
+
+/* Project Slideshow (Max 5 Images) */
+.gallery-card{
+background:#10233d;
+border:1px solid rgba(0,212,255,.22);
+border-radius:20px;
+overflow:hidden;
+margin-top:20px;
+box-shadow:0 14px 32px rgba(0,0,0,.35);
+}
+
+.gallery-stage{
+position:relative;
+width:100%;
+height:450px;
+background:#08162a;
+overflow:hidden;
+}
+
+.gallery-stage img{
+width:100%;
+height:100%;
+object-fit:contain;
+background:#08162a;
+transition:opacity .35s ease;
+}
+
+.gallery-stage img.fade{
+opacity:.3;
+}
+
+.gallery-counter{
+position:absolute;
+top:14px;
+right:14px;
+background:rgba(7,20,38,.85);
+border:1px solid rgba(255,255,255,.16);
+color:#e2e8f0;
+padding:5px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+}
+
+.gallery-nav{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+width:42px;
+height:42px;
+border-radius:50%;
+border:1px solid rgba(0,212,255,.45);
+background:rgba(7,20,38,.82);
+color:#00d4ff;
+font-size:22px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:.2s;
+}
+
+.gallery-nav:hover{
+background:#00d4ff;
+color:#071426;
+}
+
+.gallery-nav.prev{left:14px;}
+.gallery-nav.next{right:14px;}
+
+.gallery-controls{
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:12px;
+padding:14px 20px;
+background:#0b192e;
+border-top:1px solid rgba(255,255,255,.06);
+}
+
+.thumbs{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+align-items:center;
+}
+
+.thumb-btn{
+width:68px;
+height:44px;
+border-radius:8px;
+overflow:hidden;
+border:2px solid transparent;
+background:#071426;
+cursor:pointer;
+padding:0;
+opacity:.6;
+transition:.2s;
+}
+
+.thumb-btn img{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block;
+}
+
+.thumb-btn.active{
+border-color:#00d4ff;
+opacity:1;
+transform:translateY(-2px);
+}
+
+.auto-toggle-btn{
+background:rgba(0,212,255,.12);
+color:#00d4ff;
+border:1px solid rgba(0,212,255,.35);
+padding:7px 14px;
+border-radius:8px;
+font-size:12px;
+font-weight:600;
+cursor:pointer;
+}
+
+.auto-toggle-btn:hover{
+background:rgba(0,212,255,.22);
 }
 
 .card{
@@ -143,18 +297,19 @@ line-height:1.5;
 font-size:15px;
 }
 
-.meta-row{
-color:#94a3b8;
-font-size:14px;
-margin-top:10px;
-}
-
 @media(max-width:640px){
 h1{
 font-size:28px;
 }
 .hero-card, .card{
 padding:22px;
+}
+.gallery-stage{
+height:260px;
+}
+.thumb-btn{
+width:52px;
+height:36px;
 }
 }
 </style>
@@ -172,6 +327,21 @@ padding:22px;
         <span class="tech-pill" id="projectTechnology">Loading...</span>
         <h1 id="projectTitle">Loading Project...</h1>
         <p class="meta-row" id="projectMeta">HS Automation Solutions • Case Study</p>
+        <a id="projectLiveUrl" class="live-btn" href="#" target="_blank" rel="noopener" style="display:none;">Open Live Solution ↗</a>
+    </div>
+
+    <!-- Project Slideshow (Max 5 Images) -->
+    <div class="gallery-card" id="galleryCard" style="display:none;">
+        <div class="gallery-stage" id="galleryStage">
+            <img id="galleryImg" src="" alt="Project Screenshot">
+            <span class="gallery-counter" id="galleryCounter">1 / 1</span>
+            <button type="button" class="gallery-nav prev" onclick="prevGallerySlide()" aria-label="Previous image">‹</button>
+            <button type="button" class="gallery-nav next" onclick="nextGallerySlide()" aria-label="Next image">›</button>
+        </div>
+        <div class="gallery-controls">
+            <div class="thumbs" id="galleryThumbs"></div>
+            <button type="button" class="auto-toggle-btn" id="autoPlayBtn" onclick="toggleAutoPlay()">Auto Slide: ON</button>
+        </div>
     </div>
 
     <div class="card">
@@ -184,13 +354,122 @@ padding:22px;
 </div>
 
 <script>
+const SHEET_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1";
 const params = new URLSearchParams(window.location.search);
 const selectedProject = (params.get("project") || "").trim();
+
+let projectImages = [];
+let galleryIndex = 0;
+let galleryTimer = null;
+let isAutoPlaying = true;
+
+function extractProjectImages(project) {
+    const urls = [];
+
+    if (project.ImageURL) {
+        String(project.ImageURL)
+            .split(/[\n,]+/)
+            .map(u => u.trim())
+            .filter(Boolean)
+            .forEach(u => urls.push(u));
+    }
+
+    ["ImageURL2", "ImageURL3", "ImageURL4", "ImageURL5", "Image1", "Image2", "Image3", "Image4", "Image5"].forEach(col => {
+        if (project[col] && String(project[col]).trim()) {
+            urls.push(String(project[col]).trim());
+        }
+    });
+
+    return [...new Set(urls)].slice(0, 5);
+}
+
+function renderGallery(images, title) {
+    projectImages = images;
+    const galleryCard = document.getElementById("galleryCard");
+
+    if (!projectImages.length) {
+        galleryCard.style.display = "none";
+        return;
+    }
+
+    galleryCard.style.display = "block";
+    const thumbsEl = document.getElementById("galleryThumbs");
+    thumbsEl.innerHTML = "";
+
+    projectImages.forEach((url, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "thumb-btn" + (idx === 0 ? " active" : "");
+        btn.setAttribute("aria-label", `View image ${idx + 1}`);
+        btn.innerHTML = `<img src="${url}" alt="${title} preview ${idx + 1}">`;
+        btn.onclick = () => showGallerySlide(idx);
+        thumbsEl.appendChild(btn);
+    });
+
+    const showNav = projectImages.length > 1;
+    document.querySelector(".gallery-nav.prev").style.display = showNav ? "flex" : "none";
+    document.querySelector(".gallery-nav.next").style.display = showNav ? "flex" : "none";
+    document.getElementById("autoPlayBtn").style.display = showNav ? "inline-block" : "none";
+
+    showGallerySlide(0);
+    startGalleryTimer();
+}
+
+function showGallerySlide(idx) {
+    if (!projectImages.length) return;
+    galleryIndex = (idx + projectImages.length) % projectImages.length;
+
+    const imgEl = document.getElementById("galleryImg");
+    imgEl.classList.add("fade");
+    setTimeout(() => {
+        imgEl.src = projectImages[galleryIndex];
+        document.getElementById("galleryCounter").innerText = `${galleryIndex + 1} / ${projectImages.length}`;
+        imgEl.classList.remove("fade");
+    }, 120);
+
+    document.querySelectorAll(".thumb-btn").forEach((btn, i) => {
+        btn.classList.toggle("active", i === galleryIndex);
+    });
+
+    if (isAutoPlaying) startGalleryTimer();
+}
+
+function nextGallerySlide() {
+    showGallerySlide(galleryIndex + 1);
+}
+
+function prevGallerySlide() {
+    showGallerySlide(galleryIndex - 1);
+}
+
+function startGalleryTimer() {
+    clearInterval(galleryTimer);
+    if (isAutoPlaying && projectImages.length > 1) {
+        galleryTimer = setInterval(nextGallerySlide, 3500);
+    }
+}
+
+function toggleAutoPlay() {
+    isAutoPlaying = !isAutoPlaying;
+    document.getElementById("autoPlayBtn").innerText = `Auto Slide: ${isAutoPlaying ? "ON" : "OFF"}`;
+    if (isAutoPlaying) {
+        startGalleryTimer();
+    } else {
+        clearInterval(galleryTimer);
+    }
+}
+
+const galleryStage = document.getElementById("galleryStage");
+galleryStage.addEventListener("mouseenter", () => clearInterval(galleryTimer));
+galleryStage.addEventListener("mouseleave", () => {
+    if (isAutoPlaying) startGalleryTimer();
+});
 
 async function loadProject() {
     const titleEl = document.getElementById("projectTitle");
     const techEl = document.getElementById("projectTechnology");
     const overviewEl = document.getElementById("projectOverview");
+    const liveBtnEl = document.getElementById("projectLiveUrl");
 
     if (!selectedProject) {
         titleEl.innerText = "Project Not Specified";
@@ -200,9 +479,7 @@ async function loadProject() {
     }
 
     try {
-        const response = await fetch(
-            "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1"
-        );
+        const response = await fetch(SHEET_API);
         const data = await response.json();
 
         const project = data.find(
@@ -210,10 +487,22 @@ async function loadProject() {
         );
 
         if (project) {
-            document.title = `${project.ProjectName} | HS Automation Solutions`;
-            titleEl.innerText = project.ProjectName;
-            techEl.innerText = project.Technology || "Automation";
-            overviewEl.innerText = (project["Project Overview"] || "").trim() || "No project overview available yet.";
+            const name = (project.ProjectName || "Project Details").trim();
+            const tech = (project.Technology || "Automation").trim();
+            const overview = (project["Project Overview"] || "").trim();
+            const liveUrl = (project.ProjectURL || "").trim();
+
+            document.title = `${name} | HS Automation Solutions`;
+            titleEl.innerText = name;
+            techEl.innerText = tech;
+            overviewEl.innerText = overview || "No project overview available yet.";
+
+            if (liveUrl) {
+                liveBtnEl.href = liveUrl;
+                liveBtnEl.style.display = "inline-flex";
+            }
+
+            renderGallery(extractProjectImages(project), name);
         } else {
             titleEl.innerText = "Project Not Found";
             techEl.innerText = "Not Found";
