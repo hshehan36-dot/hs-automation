@@ -53,24 +53,49 @@ transform:translateY(-2px);
 box-shadow:0 8px 18px rgba(0,212,255,.3);
 }
 
+.hero-actions{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+margin-top:18px;
+}
+
 .live-btn{
 display:inline-flex;
 align-items:center;
 gap:8px;
 background:#00d4ff;
 color:#071426;
-padding:11px 22px;
+padding:10px 20px;
 border-radius:10px;
 text-decoration:none;
 font-weight:700;
 font-size:14px;
-margin-top:16px;
 transition:.2s;
 }
 
 .live-btn:hover{
 transform:translateY(-2px);
 box-shadow:0 8px 18px rgba(0,212,255,.3);
+}
+
+.similar-btn{
+display:inline-flex;
+align-items:center;
+gap:8px;
+background:rgba(0,212,255,.12);
+color:#00d4ff;
+border:1px solid rgba(0,212,255,.45);
+padding:10px 18px;
+border-radius:10px;
+text-decoration:none;
+font-weight:600;
+font-size:14px;
+transition:.2s;
+}
+
+.similar-btn:hover{
+background:rgba(0,212,255,.22);
 }
 
 .copy-btn{
@@ -476,7 +501,10 @@ align-items:flex-start;
         </div>
         <h1 id="projectTitle">Loading Project...</h1>
         <p class="meta-row" id="projectMeta">HS Automation Solutions • Case Study</p>
-        <a id="projectLiveUrl" class="live-btn" href="#" target="_blank" rel="noopener" style="display:none;">Open Live Solution ↗</a>
+        <div class="hero-actions">
+            <a id="projectLiveUrl" class="live-btn" href="#" target="_blank" rel="noopener" style="display:none;">Open Live Solution ↗</a>
+            <a id="requestSimilarLink" class="similar-btn" href="index.html#contact">Request Similar Solution →</a>
+        </div>
     </div>
 
     <!-- Project Slideshow (Max 5 Images) -->
@@ -578,44 +606,63 @@ function extractProjectImages(project) {
     return [...new Set(urls)].slice(0, 5);
 }
 
+/* Smart Fallback Extraction */
 function parseKeyFeatures(project, overview) {
     const raw = (project.KeyFeatures || project["Key Features"] || "").trim();
     if (raw) {
         return raw
             .split(/[\n•·]+/)
             .map(item => item.replace(/^[-*]\s*/, "").trim())
-            .filter(Boolean);
+            .filter(Boolean)
+            .slice(0, 6);
     }
 
-    // Fallback: extract key feature sentences/lines from overview if KeyFeatures column is empty
+    // Clean comma-separated lists like "Key features include A, B, C, and D."
+    const cleanedText = String(overview || "")
+        .replace(/^key features (include|are):?\s*/i, "")
+        .trim();
+
+    const commaParts = cleanedText
+        .split(/,\s*(?:and\s+)?|\.\s+/)
+        .map(p => p.replace(/\.$/, "").trim())
+        .filter(p => p.length > 6 && p.length < 130);
+
+    if (commaParts.length >= 3) {
+        return commaParts.slice(0, 5).map(p => p.charAt(0).toUpperCase() + p.slice(1));
+    }
+
     const lines = String(overview || "")
         .split(/\n+/)
-        .map(l => l.trim())
+        .map(l => l.replace(/^[-*•▹]\s*/, "").trim())
         .filter(Boolean);
 
     if (lines.length > 1) {
-        return lines.slice(1, 5).map(l => l.replace(/^[-*•]\s*/, ""));
+        return lines.slice(0, 4).map(l => l.length > 150 ? l.slice(0, 147).trim() + "..." : l);
     }
 
     const sentences = String(overview || "")
         .split(/(?<=[.!?])\s+/)
         .map(s => s.trim())
-        .filter(s => s.length > 12);
+        .filter(s => s.length > 10);
 
-    return sentences.slice(0, 3);
+    return sentences.slice(0, 3).map(s => s.length > 150 ? s.slice(0, 147).trim() + "..." : s);
 }
 
 function buildBusinessImpact(project, overview) {
     const explicit = (project.BusinessImpact || project["Business Impact"] || "").trim();
     if (explicit) return explicit;
 
-    const lines = String(overview || "")
-        .split(/\n+/)
-        .map(l => l.trim())
+    const sentences = String(overview || "")
+        .split(/(?<=[.!?])\s+/)
+        .map(s => s.trim())
         .filter(Boolean);
 
-    if (lines.length >= 2) {
-        return lines[lines.length - 1];
+    const impactSentence = sentences.find(s =>
+        /(enables|improves|reduces|streamlines|accelerates|enhances|supports|automates|decision|efficiency|outcome|impact)/i.test(s)
+    );
+
+    if (impactSentence) {
+        return impactSentence;
     }
 
     return "Streamlines manual workflows, improves data visibility and accuracy, and supports faster operational decision-making.";
@@ -630,13 +677,12 @@ function buildArchitectureInfo(project) {
         .filter(Boolean);
 
     const description = explicit ||
-        `Built using ${tools.join(", ")} to connect data sources, automate business logic, and deliver an intuitive user experience.`;
+        `Built using ${tools.join(", ")} to connect data sources, automate business logic, and deliver a clean, maintainable solution.`;
 
     return { description, tools };
 }
 
 function renderCaseStudySections(project, overview) {
-    // 1. Key Features
     const features = parseKeyFeatures(project, overview);
     const featuresCard = document.getElementById("keyFeaturesCard");
     const featuresList = document.getElementById("keyFeaturesList");
@@ -648,10 +694,8 @@ function renderCaseStudySections(project, overview) {
         featuresCard.style.display = "none";
     }
 
-    // 2. Business Impact / Outcome
     document.getElementById("businessImpactText").innerText = buildBusinessImpact(project, overview);
 
-    // 3. Architecture / Tools Used
     const arch = buildArchitectureInfo(project);
     document.getElementById("architectureText").innerText = arch.description;
     document.getElementById("archTags").innerHTML = arch.tools
@@ -785,6 +829,7 @@ async function loadProject() {
     const featuredBadgeEl = document.getElementById("projectFeaturedBadge");
     const overviewEl = document.getElementById("projectOverview");
     const liveBtnEl = document.getElementById("projectLiveUrl");
+    const similarLinkEl = document.getElementById("requestSimilarLink");
 
     if (!selectedProject) {
         titleEl.innerText = "Project Not Specified";
@@ -818,6 +863,7 @@ async function loadProject() {
             techEl.innerText = tech;
             featuredBadgeEl.style.display = featured ? "inline-flex" : "none";
             overviewEl.innerText = overview;
+            similarLinkEl.href = `index.html?similar=${encodeURIComponent(name)}&tech=${encodeURIComponent(tech)}#contact`;
 
             if (liveUrl) {
                 liveBtnEl.href = liveUrl;
