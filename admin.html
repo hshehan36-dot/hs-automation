@@ -9,10 +9,16 @@ content="width=device-width, initial-scale=1.0">
 
 <style>
 
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
 body{
 background:#071426;
-font-family:Segoe UI;
-padding:40px;
+font-family:'Segoe UI',sans-serif;
+padding:40px 20px;
 color:white;
 }
 
@@ -21,33 +27,81 @@ max-width:800px;
 margin:auto;
 }
 
+.top-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:12px;
+margin-bottom:22px;
+}
+
+.back-link{
+color:#00d4ff;
+text-decoration:none;
+font-weight:600;
+border:1px solid rgba(0,212,255,.35);
+padding:8px 16px;
+border-radius:8px;
+}
+
+.back-link:hover{
+background:rgba(0,212,255,.12);
+}
+
 .card{
 background:#10233d;
-padding:25px;
+padding:28px;
 border-radius:15px;
+border:1px solid rgba(0,212,255,.18);
+}
+
+.section-label{
+display:block;
+color:#00d4ff;
+font-size:13px;
+font-weight:700;
+margin-top:8px;
+margin-bottom:4px;
 }
 
 input,
 textarea{
 width:100%;
 padding:12px;
-margin-top:10px;
-margin-bottom:15px;
+margin-top:6px;
+margin-bottom:14px;
 border:none;
 border-radius:8px;
+font-family:'Segoe UI',sans-serif;
+font-size:14px;
 }
 
 button{
 background:#00d4ff;
+color:#071426;
 border:none;
-padding:12px 25px;
+padding:12px 26px;
 font-weight:bold;
 border-radius:8px;
 cursor:pointer;
+font-size:15px;
+transition:.2s;
+}
+
+button:hover{
+opacity:.92;
+transform:translateY(-1px);
+}
+
+button:disabled{
+opacity:.6;
+cursor:not-allowed;
 }
 
 h1{
 color:#00d4ff;
+font-size:32px;
 }
 
 </style>
@@ -78,9 +132,14 @@ alert("Login Success");
 
 <div class="container">
 
+<div class="top-row">
 <h1>HS Admin Panel</h1>
+<a href="index.html#projects" class="back-link">← Back to Website</a>
+</div>
 
 <div class="card">
+
+<span class="section-label">Project Details</span>
 
 <input
 id="projectName"
@@ -91,19 +150,39 @@ id="technology"
 placeholder="Technology">
 
 <input
-id="imageUrl"
-placeholder="Image URL">
+id="projectUrl"
+placeholder="Project URL (Live App / Dashboard Link)">
 
-    <textarea
+<span class="section-label">Slideshow Images (Up to 5 Images)</span>
+
+<input
+id="imageUrl"
+placeholder="Image URL 1 (Main / Slide 1)">
+
+<input
+id="imageUrl2"
+placeholder="Image URL 2 (Slide 2 - Optional)">
+
+<input
+id="imageUrl3"
+placeholder="Image URL 3 (Slide 3 - Optional)">
+
+<input
+id="imageUrl4"
+placeholder="Image URL 4 (Slide 4 - Optional)">
+
+<input
+id="imageUrl5"
+placeholder="Image URL 5 (Slide 5 - Optional)">
+
+<span class="section-label">Overview</span>
+
+<textarea
 id="projectOverview"
 placeholder="Project Overview"
 rows="6"></textarea>
-    
-<input
-id="projectUrl"
-placeholder="Project URL">
 
-<button onclick="saveProject()">
+<button id="saveBtn" onclick="saveProject()">
 Add Project
 </button>
 
@@ -115,24 +194,27 @@ Add Project
 
 async function saveProject(){
 
+const saveBtn = document.getElementById("saveBtn");
+
 const data = {
-
-ProjectName:
-document.getElementById("projectName").value,
-
-Technology:
-document.getElementById("technology").value,
-
-ImageURL:
-document.getElementById("imageUrl").value,
-
-ProjectURL:
-document.getElementById("projectUrl").value,
-
-ProjectOverview:
-document.getElementById("projectOverview").value
-
+ProjectName: document.getElementById("projectName").value.trim(),
+Technology: document.getElementById("technology").value.trim(),
+ImageURL: document.getElementById("imageUrl").value.trim(),
+ImageURL2: document.getElementById("imageUrl2").value.trim(),
+ImageURL3: document.getElementById("imageUrl3").value.trim(),
+ImageURL4: document.getElementById("imageUrl4").value.trim(),
+ImageURL5: document.getElementById("imageUrl5").value.trim(),
+ProjectURL: document.getElementById("projectUrl").value.trim(),
+ProjectOverview: document.getElementById("projectOverview").value.trim()
 };
+
+if(!data.ProjectName){
+    alert("Please enter a Project Name");
+    return;
+}
+
+saveBtn.disabled = true;
+saveBtn.innerText = "Saving...";
 
 try{
 
@@ -146,10 +228,27 @@ body:JSON.stringify(data)
 
 alert("Project Added Successfully");
 
+document.getElementById("projectName").value = "";
+document.getElementById("technology").value = "";
+document.getElementById("imageUrl").value = "";
+document.getElementById("imageUrl2").value = "";
+document.getElementById("imageUrl3").value = "";
+document.getElementById("imageUrl4").value = "";
+document.getElementById("imageUrl5").value = "";
+document.getElementById("projectUrl").value = "";
+document.getElementById("projectOverview").value = "";
+
 }
 catch(err){
 
 alert("Error Saving Project");
+console.error(err);
+
+}
+finally{
+
+saveBtn.disabled = false;
+saveBtn.innerText = "Add Project";
 
 }
 
