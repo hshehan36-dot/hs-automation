@@ -19,23 +19,26 @@ background:#071426;
 color:white;
 }
 
+/* Navbar & Mobile Menu */
 nav{
 position:fixed;
 width:100%;
 top:0;
-background:rgba(0,0,0,.75);
+background:rgba(0,0,0,.82);
 backdrop-filter: blur(10px);
 padding:15px 8%;
 display:flex;
 justify-content:space-between;
 align-items:center;
 z-index:1000;
+border-bottom:1px solid rgba(255,255,255,.06);
 }
 
 .logo{
 font-size:24px;
 font-weight:bold;
 color:#00d4ff;
+letter-spacing:.3px;
 }
 
 nav ul{
@@ -49,10 +52,63 @@ nav a{
 text-decoration:none;
 color:white;
 font-weight:500;
+font-size:15px;
 transition:.25s;
 }
 
 nav a:hover{
+color:#00d4ff;
+}
+
+.menu-toggle{
+display:none;
+background:rgba(0,212,255,.12);
+color:#00d4ff;
+border:1px solid rgba(0,212,255,.4);
+border-radius:8px;
+width:42px;
+height:38px;
+font-size:22px;
+line-height:1;
+cursor:pointer;
+align-items:center;
+justify-content:center;
+}
+
+.mobile-menu{
+display:none;
+position:fixed;
+top:68px;
+left:0;
+right:0;
+background:rgba(6,18,34,.97);
+backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(0,212,255,.25);
+padding:16px 8% 22px;
+z-index:999;
+flex-direction:column;
+gap:12px;
+box-shadow:0 16px 32px rgba(0,0,0,.5);
+}
+
+.mobile-menu.open{
+display:flex;
+}
+
+.mobile-menu a{
+color:white;
+text-decoration:none;
+font-size:16px;
+font-weight:500;
+padding:8px 4px;
+border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.mobile-menu a:last-child{
+border-bottom:none;
+}
+
+.mobile-menu a:hover{
 color:#00d4ff;
 }
 
@@ -268,6 +324,105 @@ color:#00d4ff;
 margin-bottom:10px;
 }
 
+/* Filter Bar & Search Box */
+.project-controls{
+background:#0e203a;
+border:1px solid rgba(0,212,255,.18);
+border-radius:18px;
+padding:20px 22px;
+margin-bottom:28px;
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.search-row{
+display:flex;
+gap:10px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.search-input-wrap{
+position:relative;
+flex:1;
+min-width:220px;
+}
+
+.search-input{
+width:100%;
+padding:12px 16px;
+background:#071426;
+color:white;
+border:1px solid rgba(0,212,255,.32);
+border-radius:12px;
+font-size:14px;
+outline:none;
+transition:.2s;
+}
+
+.search-input::placeholder{
+color:#64748b;
+}
+
+.search-input:focus{
+border-color:#00d4ff;
+box-shadow:0 0 0 3px rgba(0,212,255,.14);
+}
+
+.clear-search-btn{
+background:rgba(255,255,255,.08);
+color:#cbd5e1;
+border:1px solid rgba(255,255,255,.14);
+padding:11px 16px;
+border-radius:12px;
+font-size:13px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.clear-search-btn:hover{
+background:rgba(255,255,255,.16);
+color:white;
+}
+
+.filter-pills{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+}
+
+.filter-btn{
+background:#08172c;
+color:#cbd5e1;
+border:1px solid rgba(0,212,255,.22);
+padding:7px 15px;
+border-radius:999px;
+font-size:13px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.filter-btn:hover{
+border-color:#00d4ff;
+color:white;
+}
+
+.filter-btn.active{
+background:#00d4ff;
+color:#071426;
+border-color:#00d4ff;
+box-shadow:0 6px 16px rgba(0,212,255,.28);
+}
+
+.result-count{
+font-size:13px;
+color:#94a3b8;
+}
+
 /* Interactive Projects Grid with Per-Project Max 5 Image Slideshow */
 .projects{
 display:grid;
@@ -278,19 +433,20 @@ gap:26px;
 .project{
 position:relative;
 background:linear-gradient(160deg,#10233d 0%,#0b192e 100%);
-border:1px solid rgba(0,212,255,.18);
+border:1px solid rgba(0,212,255,.2);
 border-radius:18px;
 overflow:hidden;
 display:flex;
 flex-direction:column;
 justify-content:space-between;
+cursor:pointer;
 transition:transform .28s ease, border-color .28s ease, box-shadow .28s ease;
 }
 
 .project:hover{
-transform:translateY(-7px);
-border-color:rgba(0,212,255,.65);
-box-shadow:0 16px 32px rgba(0,0,0,.45), 0 0 0 1px rgba(0,212,255,.2);
+transform:translateY(-8px);
+border-color:rgba(0,212,255,.72);
+box-shadow:0 18px 36px rgba(0,0,0,.5), 0 0 0 1px rgba(0,212,255,.22);
 }
 
 .card-slider{
@@ -306,7 +462,11 @@ width:100%;
 height:100%;
 object-fit:cover;
 display:block;
-transition:opacity .35s ease;
+transition:opacity .35s ease, transform .45s ease;
+}
+
+.project:hover .card-slider img{
+transform:scale(1.03);
 }
 
 .card-slider img.fade{
@@ -422,6 +582,11 @@ margin-bottom:10px;
 color:white;
 font-size:21px;
 line-height:1.35;
+transition:color .2s;
+}
+
+.project:hover .project-content h3{
+color:#00d4ff;
 }
 
 .project-summary{
@@ -442,6 +607,16 @@ gap:10px;
 margin-top:22px;
 padding-top:16px;
 border-top:1px solid rgba(255,255,255,.07);
+}
+
+.empty-state{
+grid-column:1 / -1;
+text-align:center;
+background:#0f233e;
+border:1px dashed rgba(0,212,255,.35);
+border-radius:16px;
+padding:36px 20px;
+color:#cbd5e1;
 }
 
 /* Quick Preview Modal */
@@ -549,6 +724,7 @@ height:100%;
 background:#00d4ff;
 }
 
+/* Contact Form & Feedback Banner */
 .contact-form{
 max-width:700px;
 margin:auto;
@@ -557,20 +733,69 @@ margin:auto;
 .contact-form input,
 .contact-form textarea{
 width:100%;
-padding:12px;
-margin-bottom:15px;
-border:none;
+padding:12px 14px;
+margin-bottom:14px;
+border:2px solid transparent;
 border-radius:10px;
+background:white;
+color:#071426;
+font-size:14px;
+outline:none;
+transition:.2s;
+}
+
+.contact-form input.invalid,
+.contact-form textarea.invalid{
+border-color:#ff5c77;
+background:#fff5f7;
 }
 
 .contact-form button{
 background:#00d4ff;
-color:black;
+color:#071426;
 padding:12px 30px;
 border:none;
 border-radius:10px;
 cursor:pointer;
 font-weight:bold;
+font-size:15px;
+transition:.2s;
+}
+
+.contact-form button:hover{
+transform:translateY(-1px);
+box-shadow:0 8px 18px rgba(0,212,255,.28);
+}
+
+.contact-form button:disabled{
+opacity:.65;
+cursor:not-allowed;
+}
+
+.form-feedback{
+display:none;
+padding:14px 18px;
+border-radius:12px;
+margin-bottom:16px;
+font-size:14px;
+font-weight:600;
+line-height:1.5;
+}
+
+.form-feedback.show{
+display:block;
+}
+
+.form-feedback.success{
+background:rgba(16, 185, 129, .16);
+border:1px solid rgba(52, 211, 153, .55);
+color:#6ee7b7;
+}
+
+.form-feedback.error{
+background:rgba(239, 68, 68, .16);
+border:1px solid rgba(248, 113, 113, .55);
+color:#fca5a5;
 }
 
 .footer{
@@ -605,6 +830,7 @@ font-size:30px;
 text-decoration:none;
 color:white;
 box-shadow:0 0 15px rgba(0,0,0,.4);
+z-index:900;
 }
 
 @media(max-width:900px){
@@ -625,6 +851,10 @@ font-size:18px;
 nav ul{
 display:none;
 }
+
+.menu-toggle{
+display:flex;
+}
 }
 </style>
 </head>
@@ -641,9 +871,22 @@ display:none;
 <li><a href="#skills">Skills</a></li>
 <li><a href="#contact">Contact</a></li>
 <li><a href="#demo">Live Demos</a></li>
-<li><a href="#" onclick="openAdmin()">Admin</a></li>
+<li><a href="#" onclick="openAdmin(event)">Admin</a></li>
 </ul>
+
+<button type="button" class="menu-toggle" id="menuToggleBtn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">☰</button>
 </nav>
+
+<!-- Mobile Dropdown Menu -->
+<div class="mobile-menu" id="mobileMenu">
+<a href="#about" onclick="closeMobileMenu()">About</a>
+<a href="#services" onclick="closeMobileMenu()">Services</a>
+<a href="#projects" onclick="closeMobileMenu()">Projects</a>
+<a href="#skills" onclick="closeMobileMenu()">Skills</a>
+<a href="#contact" onclick="closeMobileMenu()">Contact</a>
+<a href="#demo" onclick="closeMobileMenu()">Live Demos</a>
+<a href="#" onclick="openAdmin(event)">Admin</a>
+</div>
 
 <section class="hero">
 <h1>HS Automation Solutions</h1>
@@ -755,6 +998,28 @@ Launch 3W Demo →
 
 <section id="projects">
 <h2 class="section-title">Projects</h2>
+
+<!-- Search & Technology Filter Controls -->
+<div class="project-controls">
+<div class="search-row">
+<div class="search-input-wrap">
+<input
+type="text"
+id="projectSearch"
+class="search-input"
+placeholder="Search by project name or technology (e.g., Power BI, Medical, SharePoint)..."
+oninput="applyProjectFilters()">
+</div>
+<button type="button" class="clear-search-btn" onclick="resetProjectFilters()">Reset</button>
+</div>
+
+<div class="filter-pills" id="techFilterBar">
+<button type="button" class="filter-btn active" data-tech="ALL" onclick="selectTechFilter('ALL')">All</button>
+</div>
+
+<div class="result-count" id="projectResultCount"></div>
+</div>
+
 <div class="projects" id="projectsContainer"></div>
 </section>
 
@@ -814,17 +1079,45 @@ Launch 3W Demo →
 <p>📍 Location : Sri Lanka</p>
 </div>
 
-<form id="contactForm">
+<div id="contactFeedback" class="form-feedback" role="alert"></div>
+
+<form id="contactForm" novalidate>
 <input type="hidden" name="_subject" value="New Website Inquiry">
-<input id="name" type="text" name="Name" placeholder="Your Name" required>
-<input id="email" type="email" name="Email" placeholder="Your Email" required>
-<textarea id="message" name="Message" rows="5" placeholder="Your Message" required></textarea>
-<button type="button" onclick="sendMessage()">Send Message</button>
+
+<input
+id="name"
+type="text"
+name="Name"
+placeholder="Your Name"
+oninput="clearFieldError('name')"
+required>
+
+<input
+id="email"
+type="email"
+name="Email"
+placeholder="Your Email"
+oninput="clearFieldError('email')"
+required>
+
+<textarea
+id="message"
+name="Message"
+rows="5"
+placeholder="Your Message"
+oninput="clearFieldError('message')"
+required></textarea>
+
+<button type="button" id="sendMsgBtn" onclick="sendMessage()">
+Send Message
+</button>
 </form>
 
 <br><br>
 
-<a class="linkedin-btn" href="https://linkedin.com/in/hasitha-shehan-a66b632b3" target="_blank">
+<a class="linkedin-btn"
+href="https://linkedin.com/in/hasitha-shehan-a66b632b3"
+target="_blank">
 LinkedIn Profile
 </a>
 </div>
@@ -841,11 +1134,35 @@ LinkedIn Profile
 <script>
 const SHEET_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1";
 const STATS_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Stats";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec";
 
 let loadedProjectsData = [];
+let selectedTech = "ALL";
 const cardSlideStates = {};
 let cardAutoTimer = null;
 
+/* Mobile Menu */
+function toggleMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+    const btn = document.getElementById("menuToggleBtn");
+    const isOpen = menu.classList.toggle("open");
+    btn.innerText = isOpen ? "✕" : "☰";
+}
+
+function closeMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+    const btn = document.getElementById("menuToggleBtn");
+    menu.classList.remove("open");
+    btn.innerText = "☰";
+}
+
+window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+        closeMobileMenu();
+    }
+});
+
+/* Helpers */
 function escapeHtml(str = "") {
     return String(str)
         .replace(/&/g, "&amp;")
@@ -854,7 +1171,6 @@ function escapeHtml(str = "") {
         .replace(/"/g, "&quot;");
 }
 
-// Extract up to 5 image URLs for a single project (ImageURL, ImageURL2..5 or Image1..5)
 function getProjectImages(project) {
     const urls = [];
 
@@ -875,6 +1191,14 @@ function getProjectImages(project) {
     return [...new Set(urls)].slice(0, 5);
 }
 
+function splitTechnologies(techStr = "") {
+    return String(techStr)
+        .split(/[,/|]+/)
+        .map(t => t.trim())
+        .filter(Boolean);
+}
+
+/* Per-Card Slideshow */
 function setCardSlide(projIdx, targetSlideIdx) {
     const state = cardSlideStates[projIdx];
     if (!state || !state.images.length) return;
@@ -903,10 +1227,16 @@ function setCardSlide(projIdx, targetSlideIdx) {
     }
 }
 
-function stepCardSlide(projIdx, delta) {
+function stepCardSlide(event, projIdx, delta) {
+    event.stopPropagation();
     const state = cardSlideStates[projIdx];
     if (!state || !state.images.length) return;
     setCardSlide(projIdx, state.index + delta);
+}
+
+function selectCardDot(event, projIdx, dotIdx) {
+    event.stopPropagation();
+    setCardSlide(projIdx, dotIdx);
 }
 
 function startCardSlideshows() {
@@ -922,6 +1252,153 @@ function startCardSlideshows() {
     }, 3500);
 }
 
+/* Filter & Search */
+function buildFilterButtons(projects) {
+    const filterBar = document.getElementById("techFilterBar");
+    const techSet = new Set();
+
+    projects.forEach(p => {
+        splitTechnologies(p.Technology || "").forEach(t => techSet.add(t));
+    });
+
+    const sortedTechs = [...techSet].sort((a, b) => a.localeCompare(b));
+
+    let html = `<button type="button" class="filter-btn ${selectedTech === "ALL" ? "active" : ""}" data-tech="ALL" onclick="selectTechFilter('ALL')">All</button>`;
+    sortedTechs.forEach(tech => {
+        const isActive = selectedTech.toLowerCase() === tech.toLowerCase();
+        html += `<button type="button" class="filter-btn ${isActive ? "active" : ""}" data-tech="${escapeHtml(tech)}" onclick="selectTechFilter('${escapeHtml(tech.replace(/'/g, "\\'"))}')')">${escapeHtml(tech)}</button>`;
+    });
+
+    filterBar.innerHTML = html;
+}
+
+function selectTechFilter(tech) {
+    selectedTech = tech;
+    document.querySelectorAll("#techFilterBar .filter-btn").forEach(btn => {
+        const btnTech = btn.getAttribute("data-tech");
+        btn.classList.toggle("active", btnTech.toLowerCase() === tech.toLowerCase());
+    });
+    applyProjectFilters();
+}
+
+function resetProjectFilters() {
+    selectedTech = "ALL";
+    document.getElementById("projectSearch").value = "";
+    selectTechFilter("ALL");
+}
+
+function applyProjectFilters() {
+    const query = (document.getElementById("projectSearch").value || "").trim().toLowerCase();
+
+    const filteredItems = loadedProjectsData
+        .map((project, originalIdx) => ({ project, originalIdx }))
+        .filter(({ project }) => {
+            const name = (project.ProjectName || "").toLowerCase();
+            const tech = (project.Technology || "").toLowerCase();
+            const overview = (project["Project Overview"] || "").toLowerCase();
+
+            const techMatch =
+                selectedTech === "ALL" ||
+                splitTechnologies(project.Technology || "").some(
+                    t => t.toLowerCase() === selectedTech.toLowerCase()
+                );
+
+            const searchMatch =
+                !query ||
+                name.includes(query) ||
+                tech.includes(query) ||
+                overview.includes(query);
+
+            return techMatch && searchMatch;
+        });
+
+    renderProjectsGrid(filteredItems);
+}
+
+function renderProjectsGrid(items) {
+    const projectsContainer = document.getElementById("projectsContainer");
+    const countEl = document.getElementById("projectResultCount");
+
+    countEl.innerText = `Showing ${items.length} of ${loadedProjectsData.length} project${loadedProjectsData.length === 1 ? "" : "s"}`;
+
+    if (!items.length) {
+        projectsContainer.innerHTML = `
+        <div class="empty-state">
+            <h3>No Matching Projects Found</h3>
+            <p style="margin:8px 0 16px;color:#94a3b8;">Try another keyword or reset the technology filter.</p>
+            <button type="button" class="btn" onclick="resetProjectFilters()">Show All Projects</button>
+        </div>`;
+        return;
+    }
+
+    projectsContainer.innerHTML = "";
+
+    items.forEach(({ project, originalIdx }, displayIdx) => {
+        const name = (project.ProjectName || "Untitled Project").trim();
+        const tech = (project.Technology || "Automation").trim();
+        const overview = (project["Project Overview"] || "").trim();
+        const projectUrl = (project.ProjectURL || "").trim();
+        const images = cardSlideStates[originalIdx]?.images || [];
+        const summaryText = overview || "Click card or View Project to explore full solution details and slideshow.";
+        const detailsUrl = `project.html?project=${encodeURIComponent(name)}`;
+
+        let sliderHtml = "";
+        if (images.length > 0) {
+            const hasMultiple = images.length > 1;
+            const currentSlideIdx = cardSlideStates[originalIdx]?.index || 0;
+            const dotsHtml = hasMultiple
+                ? `<div class="card-slide-dots" id="cardDots-${originalIdx}">${
+                    images.map((_, dIdx) =>
+                        `<button type="button" class="card-dot ${dIdx === currentSlideIdx ? "active" : ""}" onclick="selectCardDot(event, ${originalIdx}, ${dIdx})" aria-label="Slide ${dIdx + 1}"></button>`
+                    ).join("")
+                }</div>`
+                : "";
+
+            const navHtml = hasMultiple
+                ? `<button type="button" class="card-slide-btn prev" onclick="stepCardSlide(event, ${originalIdx}, -1)" aria-label="Previous image">‹</button>
+                   <button type="button" class="card-slide-btn next" onclick="stepCardSlide(event, ${originalIdx}, 1)" aria-label="Next image">›</button>`
+                : "";
+
+            sliderHtml = `
+            <div class="card-slider">
+                <img id="cardImg-${originalIdx}" src="${escapeHtml(images[currentSlideIdx])}" alt="${escapeHtml(name)}">
+                <span class="card-slide-badge" id="cardCounter-${originalIdx}">${currentSlideIdx + 1} / ${images.length}</span>
+                ${navHtml}
+                ${dotsHtml}
+            </div>`;
+        }
+
+        const liveBtnHtml = projectUrl
+            ? `<a href="${escapeHtml(projectUrl)}" target="_blank" rel="noopener" class="btn-ghost" onclick="event.stopPropagation()">Live App ↗</a>`
+            : "";
+
+        projectsContainer.innerHTML += `
+        <div class="project" onclick="openProjectModal(${originalIdx})" title="Click to quick preview">
+            ${sliderHtml}
+            <div class="project-body">
+                <div>
+                    <div class="project-top">
+                        <span class="project-index">PROJECT #${String(displayIdx + 1).padStart(2, "0")}</span>
+                        <span class="tech-badge">${escapeHtml(tech)}</span>
+                    </div>
+                    <div class="project-content">
+                        <h3>${escapeHtml(name)}</h3>
+                        <p class="project-summary">${escapeHtml(summaryText)}</p>
+                    </div>
+                </div>
+
+                <div class="project-actions">
+                    <a href="${detailsUrl}" class="btn" onclick="event.stopPropagation()">View Project</a>
+                    <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openProjectModal(${originalIdx})">Quick Preview</button>
+                    ${liveBtnHtml}
+                </div>
+            </div>
+        </div>
+        `;
+    });
+}
+
+/* Counter Animation */
 function animateCounter(counter) {
     const target = +(counter.getAttribute("data-target") || counter.innerText || 0);
     counter.innerText = "0";
@@ -941,7 +1418,7 @@ function animateCounter(counter) {
     update();
 }
 
-// Load Projects From Google Sheet
+/* Load Projects From Google Sheet */
 async function loadProjects() {
     const projectsContainer = document.getElementById("projectsContainer");
     projectsContainer.innerHTML = "<p>Loading Projects...</p>";
@@ -953,79 +1430,16 @@ async function loadProjects() {
             ? data.filter(row => (row.ProjectName || "").trim() !== "")
             : [];
 
-        if (!loadedProjectsData.length) {
-            projectsContainer.innerHTML = "<p>No projects available right now.</p>";
-            return;
-        }
-
-        projectsContainer.innerHTML = "";
         Object.keys(cardSlideStates).forEach(k => delete cardSlideStates[k]);
-
         loadedProjectsData.forEach((project, idx) => {
-            const name = (project.ProjectName || "Untitled Project").trim();
-            const tech = (project.Technology || "Automation").trim();
-            const overview = (project["Project Overview"] || "").trim();
-            const projectUrl = (project.ProjectURL || "").trim();
-            const images = getProjectImages(project);
-            const summaryText = overview || "Click View Project to explore full solution details, workflow, and outcomes.";
-            const detailsUrl = `project.html?project=${encodeURIComponent(name)}`;
-
-            cardSlideStates[idx] = { images, index: 0 };
-
-            let sliderHtml = "";
-            if (images.length > 0) {
-                const hasMultiple = images.length > 1;
-                const dotsHtml = hasMultiple
-                    ? `<div class="card-slide-dots" id="cardDots-${idx}">${
-                        images.map((_, dIdx) =>
-                            `<button type="button" class="card-dot ${dIdx === 0 ? "active" : ""}" onclick="setCardSlide(${idx}, ${dIdx})" aria-label="Slide ${dIdx + 1}"></button>`
-                        ).join("")
-                    }</div>`
-                    : "";
-
-                const navHtml = hasMultiple
-                    ? `<button type="button" class="card-slide-btn prev" onclick="stepCardSlide(${idx}, -1)" aria-label="Previous image">‹</button>
-                       <button type="button" class="card-slide-btn next" onclick="stepCardSlide(${idx}, 1)" aria-label="Next image">›</button>`
-                    : "";
-
-                sliderHtml = `
-                <div class="card-slider">
-                    <img id="cardImg-${idx}" src="${escapeHtml(images[0])}" alt="${escapeHtml(name)}">
-                    <span class="card-slide-badge" id="cardCounter-${idx}">1 / ${images.length}</span>
-                    ${navHtml}
-                    ${dotsHtml}
-                </div>`;
-            }
-
-            const liveBtnHtml = projectUrl
-                ? `<a href="${escapeHtml(projectUrl)}" target="_blank" rel="noopener" class="btn-ghost">Live App ↗</a>`
-                : "";
-
-            projectsContainer.innerHTML += `
-            <div class="project">
-                ${sliderHtml}
-                <div class="project-body">
-                    <div>
-                        <div class="project-top">
-                            <span class="project-index">PROJECT #${String(idx + 1).padStart(2, "0")}</span>
-                            <span class="tech-badge">${escapeHtml(tech)}</span>
-                        </div>
-                        <div class="project-content">
-                            <h3>${escapeHtml(name)}</h3>
-                            <p class="project-summary">${escapeHtml(summaryText)}</p>
-                        </div>
-                    </div>
-
-                    <div class="project-actions">
-                        <a href="${detailsUrl}" class="btn">View Project</a>
-                        <button type="button" class="btn-ghost" onclick="openProjectModal(${idx})">Quick Preview</button>
-                        ${liveBtnHtml}
-                    </div>
-                </div>
-            </div>
-            `;
+            cardSlideStates[idx] = {
+                images: getProjectImages(project),
+                index: 0
+            };
         });
 
+        buildFilterButtons(loadedProjectsData);
+        applyProjectFilters();
         startCardSlideshows();
     } catch (error) {
         projectsContainer.innerHTML = "<p>Unable to load projects.</p>";
@@ -1033,6 +1447,7 @@ async function loadProjects() {
     }
 }
 
+/* Quick Preview Modal */
 function openProjectModal(index) {
     const project = loadedProjectsData[index];
     if (!project) return;
@@ -1069,12 +1484,15 @@ function closeModalOnBackdrop(e) {
 }
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeProjectModal();
+    if (e.key === "Escape") {
+        closeProjectModal();
+        closeMobileMenu();
+    }
 });
 
 loadProjects();
 
-// Load Stats From Google Sheet & Animate
+/* Load Stats From Google Sheet & Animate */
 async function loadStats() {
     const counters = document.querySelectorAll(".stat");
 
@@ -1106,7 +1524,11 @@ async function loadStats() {
 
 loadStats();
 
-function openAdmin(){
+/* Admin Prompt */
+function openAdmin(e){
+    if (e) e.preventDefault();
+    closeMobileMenu();
+
     const username = prompt("Username");
     if(username !== "HS style"){
         alert("Invalid Username");
@@ -1122,30 +1544,79 @@ function openAdmin(){
     window.location.href = "admin.html";
 }
 
+/* Contact Form Validation & Feedback */
+function showFeedback(type, msg) {
+    const box = document.getElementById("contactFeedback");
+    box.className = `form-feedback show ${type}`;
+    box.innerText = msg;
+}
+
+function clearFieldError(fieldId) {
+    document.getElementById(fieldId).classList.remove("invalid");
+}
+
 async function sendMessage(){
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const msgInput = document.getElementById("message");
+    const sendBtn = document.getElementById("sendMsgBtn");
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const message = msgInput.value.trim();
+
+    nameInput.classList.remove("invalid");
+    emailInput.classList.remove("invalid");
+    msgInput.classList.remove("invalid");
+
+    if (!name) {
+        nameInput.classList.add("invalid");
+        nameInput.focus();
+        showFeedback("error", "Please enter your name before sending the message.");
+        return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailPattern.test(email)) {
+        emailInput.classList.add("invalid");
+        emailInput.focus();
+        showFeedback("error", "Please enter a valid email address.");
+        return;
+    }
+
+    if (!message) {
+        msgInput.classList.add("invalid");
+        msgInput.focus();
+        showFeedback("error", "Please write your message before sending.");
+        return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.innerText = "Sending...";
+
     const data = {
-        type:"message",
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        message: document.getElementById("message").value
+        type: "message",
+        name,
+        email,
+        message
     };
 
     try{
-        await fetch(
-            "https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec",
-            {
-                method:"POST",
-                body:JSON.stringify(data)
-            }
-        );
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify(data)
+        });
 
-        alert("Message Sent Successfully");
-        document.getElementById("name").value="";
-        document.getElementById("email").value="";
-        document.getElementById("message").value="";
+        showFeedback("success", "Thank you! Your message has been sent successfully. We will get back to you soon.");
+        nameInput.value = "";
+        emailInput.value = "";
+        msgInput.value = "";
     }catch(error){
-        alert("Error Sending Message");
+        showFeedback("error", "Something went wrong while sending your message. Please try again or contact via WhatsApp.");
         console.log(error);
+    }finally{
+        sendBtn.disabled = false;
+        sendBtn.innerText = "Send Message";
     }
 }
 </script>
