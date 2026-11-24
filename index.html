@@ -64,7 +64,7 @@ justify-content:center;
 align-items:center;
 text-align:center;
 padding:20px;
-background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.7)),
+background:linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.76)),
 url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1500&q=80');
 background-size:cover;
 background-position:center;
@@ -80,12 +80,19 @@ font-size:22px;
 max-width:800px;
 }
 
+.hero-actions{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:15px;
+margin-top:28px;
+}
+
 .btn{
 display:inline-block;
-margin-top:25px;
-padding:12px 25px;
+padding:12px 26px;
 background:#00d4ff;
-color:black;
+color:#071426;
 border-radius:50px;
 text-decoration:none;
 font-weight:bold;
@@ -95,6 +102,24 @@ transition:.25s;
 .btn:hover{
 transform:translateY(-2px);
 box-shadow:0 8px 20px rgba(0,212,255,.35);
+}
+
+.btn-outline{
+display:inline-block;
+padding:12px 26px;
+background:rgba(16,35,61,.85);
+color:#00d4ff;
+border:2px solid #00d4ff;
+border-radius:50px;
+text-decoration:none;
+font-weight:bold;
+transition:.25s;
+}
+
+.btn-outline:hover{
+background:#00d4ff;
+color:#071426;
+transform:translateY(-2px);
 }
 
 section{
@@ -132,6 +157,70 @@ text-align:center;
 font-size:42px;
 font-weight:bold;
 color:#00d4ff;
+}
+
+.demo-box{
+background:linear-gradient(135deg,#0f2442,#13315c);
+border:1px solid rgba(0,212,255,.35);
+border-radius:20px;
+padding:36px;
+display:grid;
+grid-template-columns:1.4fr 0.8fr;
+gap:28px;
+align-items:center;
+box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+
+.demo-tag{
+display:inline-block;
+background:rgba(0,212,255,.15);
+color:#00d4ff;
+border:1px solid rgba(0,212,255,.4);
+padding:5px 14px;
+border-radius:50px;
+font-size:13px;
+font-weight:600;
+margin-bottom:14px;
+}
+
+.demo-box h3{
+font-size:28px;
+margin-bottom:12px;
+color:white;
+}
+
+.demo-box p{
+color:#cbd5e1;
+line-height:1.7;
+margin-bottom:16px;
+}
+
+.demo-steps{
+list-style:none;
+display:grid;
+gap:8px;
+color:#e2e8f0;
+font-size:15px;
+}
+
+.demo-cta-panel{
+background:#08162a;
+border-radius:16px;
+padding:26px;
+text-align:center;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.demo-cta-panel h4{
+color:#00d4ff;
+font-size:20px;
+margin-bottom:10px;
+}
+
+.demo-cta-panel p{
+font-size:14px;
+color:#94a3b8;
+margin-bottom:18px;
 }
 
 .services{
@@ -273,6 +362,12 @@ color:white;
 box-shadow:0 0 15px rgba(0,0,0,.4);
 }
 
+@media(max-width:900px){
+.demo-box{
+grid-template-columns:1fr;
+}
+}
+
 @media(max-width:768px){
 
 .hero h1{
@@ -299,6 +394,7 @@ display:none;
 
 <ul>
 <li><a href="#about">About</a></li>
+<li><a href="#demo">3W Demo</a></li>
 <li><a href="#services">Services</a></li>
 <li><a href="#projects">Projects</a></li>
 <li><a href="#skills">Skills</a></li>
@@ -315,9 +411,14 @@ display:none;
 Power Apps • Power BI • Power Automate • SharePoint • Business Automation
 </p>
 
-<a href="#contact" class="btn">
+<div class="hero-actions">
+<a href="https://hshehan36-dot.github.io/3w-management-system/" target="_blank" rel="noopener" class="btn">
+Try 3W System Demo
+</a>
+<a href="#contact" class="btn-outline">
 Let's Work Together
 </a>
+</div>
 
 </section>
 
@@ -359,6 +460,35 @@ Automations
 Business Solutions
 </div>
 
+</div>
+
+</section>
+
+<section id="demo">
+
+<h2 class="section-title">Live System Demo</h2>
+
+<div class="demo-box">
+<div>
+<span class="demo-tag">Interactive Trial Available</span>
+<h3>3W Management System</h3>
+<p>
+Test our live 3W observation and action-tracking web application in action. Designed to streamline workplace observations, corrective actions, target date approvals, and automated email notifications.
+</p>
+<ul class="demo-steps">
+<li>1. Open the live system using the demo button</li>
+<li>2. Create a new 3W observation or explore active records</li>
+<li>3. Update status, request date changes, and track progress</li>
+</ul>
+</div>
+
+<div class="demo-cta-panel">
+<h4>3W System Trial</h4>
+<p>Explore the live working interface directly in your browser.</p>
+<a href="https://hshehan36-dot.github.io/3w-management-system/" target="_blank" rel="noopener" class="btn">
+Launch 3W Demo →
+</a>
+</div>
 </div>
 
 </section>
@@ -551,6 +681,25 @@ counters.forEach(counter => {
 
 });
 
+const featuredDemoHtml = `
+<div class="project">
+    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
+         alt="3W Management System">
+    <div class="project-content">
+        <h3>3W Management System (Live Trial)</h3>
+        <p>
+            <strong>Web App • Workflow &amp; Email Automation</strong>
+        </p>
+        <a href="https://hshehan36-dot.github.io/3w-management-system/"
+           target="_blank"
+           rel="noopener"
+           class="btn">
+           Use 3W System Demo
+        </a>
+    </div>
+</div>
+`;
+
 // Load Projects From Google Sheet
 async function loadProjects() {
 
@@ -568,7 +717,7 @@ async function loadProjects() {
 
         const data = await response.json();
 
-        projectsContainer.innerHTML = "";
+        projectsContainer.innerHTML = featuredDemoHtml;
 
         data.forEach(project => {
 
@@ -604,7 +753,7 @@ async function loadProjects() {
     catch (error) {
 
         projectsContainer.innerHTML =
-        "<p>Unable to load projects.</p>";
+        featuredDemoHtml + "<p style='margin-top:15px;'>Unable to load additional projects.</p>";
 
         console.error(error);
 
