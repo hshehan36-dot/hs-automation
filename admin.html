@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>HS Admin Panel</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - HS Automation</title>
 
 <style>
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 
 body{
 background:#071426;
-font-family:'Segoe UI',sans-serif;
-padding:40px 20px;
 color:white;
+padding:40px 20px;
 }
 
 .container{
-max-width:920px;
+max-width:860px;
 margin:auto;
+background:#0f233e;
+padding:30px;
+border-radius:16px;
+border:1px solid rgba(0,212,255,.2);
+box-shadow:0 12px 30px rgba(0,0,0,.35);
 }
 
-.top-row{
+.top-bar{
 display:flex;
 justify-content:space-between;
 align-items:center;
 flex-wrap:wrap;
 gap:12px;
-margin-bottom:22px;
+margin-bottom:20px;
 }
 
 h1{
 color:#00d4ff;
-font-size:32px;
+margin:0;
+font-size:28px;
 }
 
 .back-link{
 color:#00d4ff;
 text-decoration:none;
-font-weight:600;
-border:1px solid rgba(0,212,255,.35);
+font-weight:bold;
+border:1px solid rgba(0,212,255,.4);
 padding:8px 16px;
 border-radius:8px;
 transition:.2s;
@@ -52,533 +53,398 @@ transition:.2s;
 background:rgba(0,212,255,.12);
 }
 
-.tab-bar{
-display:flex;
-gap:10px;
-margin-bottom:18px;
-flex-wrap:wrap;
+.section-divider{
+border:none;
+border-top:1px solid rgba(255,255,255,.12);
+margin:35px 0;
 }
 
-.tab-btn{
-background:#10233d;
-color:#cbd5e1;
-border:1px solid rgba(0,212,255,.25);
-padding:10px 18px;
-border-radius:10px;
-font-weight:600;
+h2{
+color:#00d4ff;
+margin-bottom:14px;
+font-size:22px;
+}
+
+.hint{
+font-size:13px;
+color:#94a3b8;
+margin-bottom:15px;
+line-height:1.5;
+}
+
+label{
+display:block;
+margin-top:12px;
+margin-bottom:5px;
 font-size:14px;
-cursor:pointer;
-transition:.2s;
+color:#cbd5e1;
 }
 
-.tab-btn.active{
-background:#00d4ff;
-color:#071426;
+input, textarea, select{
+width:100%;
+padding:12px;
+margin-bottom:8px;
+border-radius:8px;
+border:1px solid rgba(255,255,255,.15);
+font-size:15px;
+background:#08162a;
+color:white;
+outline:none;
+}
+
+input:focus, textarea:focus, select:focus{
 border-color:#00d4ff;
 }
 
-.card{
-background:#10233d;
-padding:28px;
-border-radius:15px;
-border:1px solid rgba(0,212,255,.18);
-box-shadow:0 14px 30px rgba(0,0,0,.3);
-}
-
-.panel-section{
-display:none;
-}
-
-.panel-section.active{
-display:block;
-}
-
-.mode-banner{
-display:none;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-gap:10px;
-background:rgba(0,212,255,.12);
-border:1px solid rgba(0,212,255,.4);
-color:#e0f2fe;
-padding:12px 16px;
-border-radius:10px;
-margin-bottom:16px;
-font-size:13px;
-font-weight:600;
-}
-
-.mode-banner.show{
-display:flex;
-}
-
-.section-label{
-display:block;
-color:#00d4ff;
-font-size:13px;
-font-weight:700;
-margin-top:12px;
-margin-bottom:4px;
-letter-spacing:.3px;
-}
-
-input,
-textarea{
-width:100%;
-padding:12px 14px;
-margin-top:6px;
-margin-bottom:14px;
-border:none;
-border-radius:8px;
-font-family:'Segoe UI',sans-serif;
-font-size:14px;
-background:white;
-color:#071426;
-}
-
-.featured-check-row{
-display:flex;
-align-items:center;
-gap:10px;
-background:#0b192e;
-border:1px solid rgba(0,212,255,.25);
-padding:12px 14px;
-border-radius:10px;
-margin-top:6px;
-margin-bottom:14px;
-}
-
-.featured-check-row input[type="checkbox"]{
-width:18px;
-height:18px;
-margin:0;
-accent-color:#00d4ff;
-cursor:pointer;
-}
-
-.featured-check-row label{
-cursor:pointer;
-font-size:14px;
-font-weight:600;
-color:#e2e8f0;
-}
-
-.image-row{
-background:#0b192e;
-border:1px solid rgba(255,255,255,.07);
-border-radius:10px;
-padding:12px 14px;
-margin-bottom:12px;
-}
-
-.image-row-top{
-display:grid;
-grid-template-columns:1fr 96px;
-gap:12px;
-align-items:center;
-}
-
-.image-row-top input{
-margin-top:0;
-margin-bottom:0;
-}
-
-.thumb-preview{
-width:96px;
-height:60px;
-border-radius:8px;
-background:#071426;
-border:1px dashed rgba(0,212,255,.3);
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:11px;
-color:#64748b;
-text-align:center;
-}
-
-.thumb-preview img{
-width:100%;
-height:100%;
-object-fit:cover;
-display:block;
+input[readonly]{
+background:#0b1d36;
+color:#94a3b8;
+cursor:not-allowed;
 }
 
 .stats-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:14px;
-margin-top:10px;
+gap:15px;
+margin-bottom:10px;
 }
 
-.stat-field label{
-display:block;
-font-size:13px;
-color:#cbd5e1;
-font-weight:600;
-}
-
-.action-row{
+.btn-row{
 display:flex;
 gap:12px;
 flex-wrap:wrap;
-margin-top:8px;
+margin-top:14px;
 }
 
-button.primary-btn{
+button{
+padding:12px 22px;
 background:#00d4ff;
 color:#071426;
 border:none;
-padding:12px 26px;
-font-weight:bold;
 border-radius:8px;
-cursor:pointer;
 font-size:15px;
+font-weight:bold;
+cursor:pointer;
 transition:.2s;
 }
 
-button.primary-btn:hover{
-opacity:.92;
+button:hover{
 transform:translateY(-1px);
+box-shadow:0 6px 16px rgba(0,212,255,.28);
 }
 
-button.primary-btn:disabled{
+button:disabled{
 opacity:.6;
 cursor:not-allowed;
 transform:none;
 }
 
-button.secondary-btn{
-background:rgba(255,255,255,.08);
+.btn-secondary{
+background:#1e3a5f;
 color:#e2e8f0;
-border:1px solid rgba(255,255,255,.16);
-padding:11px 18px;
-font-weight:600;
-border-radius:8px;
-cursor:pointer;
-font-size:13px;
-transition:.2s;
 }
 
-button.secondary-btn:hover{
-background:rgba(255,255,255,.15);
+.btn-secondary:hover{
+box-shadow:none;
+background:#294e7d;
 }
 
-button.danger-btn{
-background:rgba(239,68,68,.16);
-color:#fca5a5;
-border:1px solid rgba(248,113,113,.45);
-padding:8px 14px;
-font-weight:600;
-border-radius:8px;
-cursor:pointer;
-font-size:12px;
-transition:.2s;
-}
-
-button.danger-btn:hover{
-background:rgba(239,68,68,.3);
+.btn-danger{
+background:#ef4444;
 color:white;
 }
 
-button.mini-btn{
-background:rgba(0,212,255,.14);
-color:#00d4ff;
-border:1px solid rgba(0,212,255,.35);
-padding:8px 14px;
-font-weight:600;
-border-radius:8px;
-cursor:pointer;
+.btn-danger:hover{
+box-shadow:0 6px 16px rgba(239,68,68,.3);
+}
+
+.btn-approve{
+background:#10b981;
+color:#051811;
+}
+
+.btn-approve:hover{
+box-shadow:0 6px 16px rgba(16,185,129,.28);
+}
+
+.status{
+margin-top:15px;
+font-size:15px;
+font-weight:bold;
+min-height:22px;
+}
+
+.badge{
+display:inline-block;
+padding:3px 10px;
+border-radius:999px;
 font-size:12px;
-transition:.2s;
+font-weight:700;
 }
 
-button.mini-btn:hover{
-background:#00d4ff;
-color:#071426;
+.badge-featured{
+background:rgba(250, 204, 21, .18);
+color:#fde047;
+border:1px solid rgba(250, 204, 21, .5);
 }
 
-/* Manage Projects List */
-.manage-toolbar{
-display:flex;
-gap:10px;
-align-items:center;
-flex-wrap:wrap;
-margin-bottom:16px;
+.badge-normal{
+background:rgba(148, 163, 184, .14);
+color:#cbd5e1;
+border:1px solid rgba(148, 163, 184, .3);
 }
 
-.manage-toolbar input{
-margin:0;
-flex:1;
-min-width:200px;
+.badge-approved{
+background:rgba(16, 185, 129, .18);
+color:#6ee7b7;
+border:1px solid rgba(16, 185, 129, .45);
 }
 
-.project-manage-list{
+.badge-pending{
+background:rgba(245, 158, 11, .18);
+color:#fcd34d;
+border:1px solid rgba(245, 158, 11, .45);
+}
+
+.project-list{
 display:grid;
 gap:12px;
+margin-top:14px;
 }
 
-.manage-item{
-background:#0b192e;
-border:1px solid rgba(255,255,255,.08);
-border-radius:12px;
-padding:16px 18px;
+.project-item{
+background:#08162a;
+border:1px solid rgba(255,255,255,.1);
+border-radius:10px;
+padding:14px 16px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:14px;
+gap:12px;
 flex-wrap:wrap;
 }
 
-.manage-item-title{
-font-size:17px;
-font-weight:700;
-color:white;
+.project-item-title{
+font-weight:bold;
+color:#00d4ff;
+font-size:16px;
 display:flex;
 align-items:center;
 gap:8px;
 flex-wrap:wrap;
 }
 
-.manage-featured-tag{
-background:rgba(250,204,21,.16);
-color:#fde047;
-border:1px solid rgba(250,204,21,.4);
-padding:2px 9px;
-border-radius:999px;
-font-size:11px;
-font-weight:700;
-}
-
-.manage-item-meta{
+.project-item-sub{
 font-size:13px;
 color:#94a3b8;
 margin-top:4px;
+word-break:break-word;
 }
 
-.manage-item-actions{
+.item-actions{
 display:flex;
 gap:8px;
 flex-wrap:wrap;
 }
 
-.status-banner{
-display:none;
-padding:13px 16px;
-border-radius:10px;
-margin-bottom:18px;
-font-size:14px;
-font-weight:600;
-line-height:1.5;
+.item-actions button{
+padding:8px 14px;
+font-size:13px;
 }
 
-.status-banner.show{
-display:block;
+.image-url-row{
+display:grid;
+grid-template-columns:1fr auto;
+gap:8px;
+align-items:center;
+margin-bottom:8px;
 }
 
-.status-banner.success{
-background:rgba(16,185,129,.16);
-border:1px solid rgba(52,211,153,.5);
-color:#6ee7b7;
+.image-url-row input{
+margin-bottom:0;
 }
 
-.status-banner.error{
-background:rgba(239,68,68,.16);
-border:1px solid rgba(248,113,113,.5);
-color:#fca5a5;
+.remove-img-btn{
+padding:11px 13px;
+font-size:13px;
+background:#334155;
+color:#f8fafc;
 }
 
-@media(max-width:560px){
-.image-row-top{
-grid-template-columns:1fr;
+.remove-img-btn:hover{
+background:#475569;
+box-shadow:none;
 }
-.thumb-preview{
-width:100%;
-height:130px;
+
+.add-img-btn{
+padding:9px 14px;
+font-size:13px;
+background:rgba(0,212,255,.14);
+color:#00d4ff;
+border:1px solid rgba(0,212,255,.45);
+margin-top:4px;
+margin-bottom:6px;
 }
+
+.add-img-btn:hover{
+background:rgba(0,212,255,.24);
+box-shadow:none;
+}
+
+.image-preview-strip{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:8px;
+margin-bottom:8px;
+}
+
+.image-preview-thumb{
+width:78px;
+height:54px;
+object-fit:cover;
+border-radius:6px;
+border:1px solid rgba(0,212,255,.35);
+background:#071426;
 }
 </style>
 </head>
 
 <body>
 
-<script>
-const username = prompt("Username");
-
-if(username !== "HS style"){
-    alert("Access Denied");
-    throw new Error("Access Denied");
-}
-
-const password = prompt("Password");
-
-if(password !== "HS@styles123"){
-    alert("Access Denied");
-    throw new Error("Access Denied");
-}
-
-alert("Login Success");
-</script>
-
 <div class="container">
-
-<div class="top-row">
-<h1>HS Admin Panel</h1>
-<a href="index.html#projects" class="back-link">← Back to Website</a>
+<div class="top-bar">
+<h1>Admin Panel</h1>
+<a class="back-link" href="index.html">← Back to Website</a>
 </div>
 
-<div class="tab-bar">
-<button type="button" class="tab-btn active" id="tabProject" onclick="switchTab('project')">+ Add / Edit Project</button>
-<button type="button" class="tab-btn" id="tabManage" onclick="switchTab('manage')">🗂 Manage Projects</button>
-<button type="button" class="tab-btn" id="tabStats" onclick="switchTab('stats')">📊 Update Stats</button>
-</div>
-
-<div id="statusBanner" class="status-banner" role="alert"></div>
-
-<div class="card">
-
-<!-- Add / Edit Project Section -->
-<div class="panel-section active" id="sectionProject">
-
-<div class="mode-banner" id="editModeBanner">
-<span id="editModeText">Editing Project</span>
-<button type="button" class="secondary-btn" onclick="cancelEditMode()">Cancel Edit (Switch to Add)</button>
-</div>
-
-<span class="section-label">Project Details</span>
-
-<input id="projectName" placeholder="Project Name">
-
-<input id="technology" placeholder="Technology (e.g., Power BI, DAX, SharePoint)">
-
-<input id="projectUrl" placeholder="Project URL (Live App / Dashboard Link - Optional)">
-
-<div class="featured-check-row">
-<input type="checkbox" id="featuredProject">
-<label for="featuredProject">⭐ Mark as Featured / Pinned Project (Highlighted & Sorted Top)</label>
-</div>
-
-<span class="section-label">Slideshow Images (Up to 5 Images + Live Preview)</span>
-
-<div class="image-row">
-<div class="image-row-top">
-<input id="imageUrl" placeholder="Image URL 1 (Main / Slide 1)" oninput="updateImagePreview(1)">
-<div class="thumb-preview" id="previewBox1">Slide 1</div>
-</div>
-</div>
-
-<div class="image-row">
-<div class="image-row-top">
-<input id="imageUrl2" placeholder="Image URL 2 (Slide 2 - Optional)" oninput="updateImagePreview(2)">
-<div class="thumb-preview" id="previewBox2">Slide 2</div>
-</div>
-</div>
-
-<div class="image-row">
-<div class="image-row-top">
-<input id="imageUrl3" placeholder="Image URL 3 (Slide 3 - Optional)" oninput="updateImagePreview(3)">
-<div class="thumb-preview" id="previewBox3">Slide 3</div>
-</div>
-</div>
-
-<div class="image-row">
-<div class="image-row-top">
-<input id="imageUrl4" placeholder="Image URL 4 (Slide 4 - Optional)" oninput="updateImagePreview(4)">
-<div class="thumb-preview" id="previewBox4">Slide 4</div>
-</div>
-</div>
-
-<div class="image-row">
-<div class="image-row-top">
-<input id="imageUrl5" placeholder="Image URL 5 (Slide 5 - Optional)" oninput="updateImagePreview(5)">
-<div class="thumb-preview" id="previewBox5">Slide 5</div>
-</div>
-</div>
-
-<span class="section-label">Case Study & Overview</span>
-
-<textarea id="projectOverview" placeholder="Project Overview" rows="5"></textarea>
-
-<textarea id="keyFeatures" placeholder="Key Features (one per line - Optional)" rows="4"></textarea>
-
-<textarea id="businessImpact" placeholder="Business Impact / Outcome (Optional)" rows="3"></textarea>
-
-<textarea id="architecture" placeholder="Architecture / Tools Used / Data Flow (Optional)" rows="3"></textarea>
-
-<div class="action-row">
-<button type="button" class="primary-btn" id="saveBtn" onclick="saveProject()">Add Project</button>
-<button type="button" class="secondary-btn" onclick="clearProjectForm()">Clear Form</button>
-</div>
-
-</div>
-
-<!-- Manage Existing Projects Section -->
-<div class="panel-section" id="sectionManage">
-<span class="section-label">Existing Projects (Edit or Delete)</span>
-<div class="manage-toolbar">
-<input id="manageSearch" placeholder="Search existing projects..." oninput="renderManageList()">
-<button type="button" class="secondary-btn" onclick="loadManageProjects()">↻ Refresh List</button>
-</div>
-<div class="project-manage-list" id="manageProjectsList">
-<p style="color:#94a3b8;font-size:14px;">Click "Manage Projects" or Refresh to load projects.</p>
-</div>
-</div>
-
-<!-- Update Stats Section -->
-<div class="panel-section" id="sectionStats">
-
-<span class="section-label">Update Homepage Counters (Stats Sheet)</span>
-<p style="color:#94a3b8;font-size:13px;margin-bottom:10px;">
-Enter the latest counts to update your Google Sheet <code>Stats</code> tab.
+<h2 id="formHeading">Add New Project</h2>
+<p class="hint">
+Fill the details below to add a new project, or click <strong>Edit</strong> on an existing project below to update it.
 </p>
 
+<form id="projectForm">
+<input type="hidden" id="editRowIndex" value="">
+<input type="hidden" id="originalProjectName" value="">
+
+<label for="projectName">Project Name *</label>
+<input type="text" id="projectName" placeholder="Project Name" required>
+
+<label for="technology">Technology *</label>
+<input type="text" id="technology" placeholder="Technology (e.g. Power BI, SharePoint)" required>
+
+<label for="featuredStatus">Pin as Featured Project?</label>
+<select id="featuredStatus">
+<option value="No">No (Normal Project)</option>
+<option value="Yes">Yes (Pin to Top with ⭐ Featured Badge)</option>
+</select>
+
+<label>Project Images (Up to 5 URLs — shown as slideshow on card & details page)</label>
+<div id="imageInputsList">
+<div class="image-url-row">
+<input type="text" class="project-image-input" placeholder="Image URL 1 (https://...)" oninput="renderImageThumbnails()">
+<button type="button" class="remove-img-btn" onclick="removeImageRow(this)" title="Remove">✕</button>
+</div>
+</div>
+<button type="button" class="add-img-btn" id="addImageBtn" onclick="addImageRow()">+ Add Another Image (Max 5)</button>
+<div class="image-preview-strip" id="imagePreviewStrip"></div>
+
+<label for="projectUrl">Live Demo / App URL (Optional)</label>
+<input type="text" id="projectUrl" placeholder="Live Demo / App URL (Optional)">
+
+<label for="projectOverview">Project Overview *</label>
+<textarea id="projectOverview" rows="4" placeholder="Project Overview" required></textarea>
+
+<label for="keyFeatures">Key Features (Optional — one per line or comma separated)</label>
+<textarea id="keyFeatures" rows="3" placeholder="e.g. Automated email reminders&#10;Role-based access control&#10;Real-time KPI dashboard"></textarea>
+
+<label for="businessImpact">Business Impact / Results (Optional)</label>
+<textarea id="businessImpact" rows="2" placeholder="e.g. Saved 12+ manual hours per week and improved tracking accuracy"></textarea>
+
+<label for="architecture">Solution Architecture / How It Works (Optional)</label>
+<textarea id="architecture" rows="3" placeholder="e.g. SharePoint Lists -> Power Automate -> Power BI / Web UI"></textarea>
+
+<div class="btn-row">
+<button type="submit" id="submitProjectBtn">Add Project</button>
+<button type="button" class="btn-secondary" id="cancelEditBtn" onclick="resetProjectForm()" style="display:none;">Cancel Edit</button>
+</div>
+</form>
+
+<div class="status" id="status"></div>
+
+<hr class="section-divider">
+
+<h2>Manage Existing Projects</h2>
+<p class="hint">
+Edit, pin/unpin Featured status, or delete projects directly from <strong>Sheet1</strong>.
+</p>
+
+<div class="btn-row" style="margin-top:0;">
+<button type="button" class="btn-secondary" onclick="loadAdminProjects()">Refresh Project List</button>
+</div>
+
+<div class="project-list" id="adminProjectsList">
+<p class="hint">Loading projects...</p>
+</div>
+
+<hr class="section-divider">
+
+<h2>Manage Client & Team Feedbacks</h2>
+<p class="hint">
+Approve feedback to display it on the homepage under <strong>Client & Team Feedback</strong>, unapprove to hide it, or delete spam entries.
+</p>
+
+<div class="btn-row" style="margin-top:0;">
+<button type="button" class="btn-secondary" onclick="loadAdminFeedbacks()">Refresh Feedback List</button>
+</div>
+
+<div class="project-list" id="adminFeedbacksList">
+<p class="hint">Loading feedbacks...</p>
+</div>
+
+<hr class="section-divider">
+
+<h2>Update Dashboard Counters (Stats)</h2>
+<p class="hint">
+Update the four numbers shown under <strong>About Me</strong> on the homepage (saved to the <strong>Stats</strong> tab).
+</p>
+
+<form id="statsForm">
 <div class="stats-grid">
-<div class="stat-field">
+<div>
 <label for="statProjects">Projects</label>
-<input id="statProjects" type="number" min="0" placeholder="e.g., 8">
+<input type="number" id="statProjects" min="0" required>
 </div>
-
-<div class="stat-field">
+<div>
 <label for="statDashboards">Dashboards</label>
-<input id="statDashboards" type="number" min="0" placeholder="e.g., 25">
+<input type="number" id="statDashboards" min="0" required>
 </div>
-
-<div class="stat-field">
+<div>
 <label for="statAutomations">Automations</label>
-<input id="statAutomations" type="number" min="0" placeholder="e.g., 30">
+<input type="number" id="statAutomations" min="0" required>
 </div>
-
-<div class="stat-field">
+<div>
 <label for="statBusiness">Business Solutions</label>
-<input id="statBusiness" type="number" min="0" placeholder="e.g., 10">
+<input type="number" id="statBusiness" min="0" required>
 </div>
 </div>
 
-<div class="action-row">
-<button type="button" class="primary-btn" id="saveStatsBtn" onclick="saveStats()">Update Stats</button>
+<div class="btn-row">
+<button type="submit" id="saveStatsBtn">Save Stats</button>
 </div>
+</form>
 
-</div>
-
-</div>
+<div class="status" id="statsStatus"></div>
 </div>
 
 <script>
 const GAS_URL = "https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec";
 const SHEET_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1";
+const STATS_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Stats";
+const FEEDBACK_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Feedback";
 
-let manageProjectsCache = [];
-let editingProjectContext = null; // { rowIndex, originalProjectName }
-
-const inputIdsBySlot = {
-    1: "imageUrl",
-    2: "imageUrl2",
-    3: "imageUrl3",
-    4: "imageUrl4",
-    5: "imageUrl5"
-};
+const MAX_IMAGES = 5;
+let adminProjectsCache = [];
 
 function escapeHtml(str = "") {
     return String(str)
@@ -588,279 +454,217 @@ function escapeHtml(str = "") {
         .replace(/"/g, "&quot;");
 }
 
-function showStatus(type, text) {
-    const banner = document.getElementById("statusBanner");
-    banner.className = `status-banner show ${type}`;
-    banner.innerText = text;
+function isFeaturedValue(val) {
+    const v = String(val || "").trim().toLowerCase();
+    return ["yes", "true", "1", "featured", "pin", "pinned"].includes(v);
 }
 
-function hideStatus() {
-    const banner = document.getElementById("statusBanner");
-    banner.className = "status-banner";
-    banner.innerText = "";
+function getImageInputs() {
+    return [...document.querySelectorAll(".project-image-input")];
 }
 
-function switchTab(tab) {
-    hideStatus();
-    document.getElementById("tabProject").classList.toggle("active", tab === "project");
-    document.getElementById("tabManage").classList.toggle("active", tab === "manage");
-    document.getElementById("tabStats").classList.toggle("active", tab === "stats");
+function getCollectedImages() {
+    const urls = getImageInputs()
+        .map(inp => inp.value.trim())
+        .filter(Boolean);
+    return [...new Set(urls)].slice(0, MAX_IMAGES);
+}
 
-    document.getElementById("sectionProject").classList.toggle("active", tab === "project");
-    document.getElementById("sectionManage").classList.toggle("active", tab === "manage");
-    document.getElementById("sectionStats").classList.toggle("active", tab === "stats");
+function updateAddImageButtonState() {
+    const addBtn = document.getElementById("addImageBtn");
+    const count = getImageInputs().length;
+    addBtn.disabled = count >= MAX_IMAGES;
+    addBtn.innerText = count >= MAX_IMAGES
+        ? `Maximum ${MAX_IMAGES} Images Reached`
+        : `+ Add Another Image (${count}/${MAX_IMAGES})`;
+}
 
-    if (tab === "manage") {
-        loadManageProjects();
+function renderImageThumbnails() {
+    const strip = document.getElementById("imagePreviewStrip");
+    const urls = getCollectedImages();
+    strip.innerHTML = urls
+        .map((url, i) => `<img class="image-preview-thumb" src="${escapeHtml(url)}" alt="Preview ${i + 1}" onerror="this.style.opacity='0.3'">`)
+        .join("");
+}
+
+function addImageRow(value = "") {
+    const list = document.getElementById("imageInputsList");
+    if (getImageInputs().length >= MAX_IMAGES) return;
+
+    const idx = getImageInputs().length + 1;
+    const row = document.createElement("div");
+    row.className = "image-url-row";
+    row.innerHTML = `
+        <input type="text" class="project-image-input" placeholder="Image URL ${idx} (https://...)" value="${escapeHtml(value)}" oninput="renderImageThumbnails()">
+        <button type="button" class="remove-img-btn" onclick="removeImageRow(this)" title="Remove">✕</button>
+    `;
+    list.appendChild(row);
+    updateAddImageButtonState();
+    renderImageThumbnails();
+}
+
+function removeImageRow(btn) {
+    const list = document.getElementById("imageInputsList");
+    const rows = list.querySelectorAll(".image-url-row");
+    if (rows.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        rows[0].querySelector("input").value = "";
     }
+    getImageInputs().forEach((inp, i) => {
+        inp.placeholder = `Image URL ${i + 1} (https://...)`;
+    });
+    updateAddImageButtonState();
+    renderImageThumbnails();
 }
 
-function updateImagePreview(slot) {
-    const inputEl = document.getElementById(inputIdsBySlot[slot]);
-    const boxEl = document.getElementById(`previewBox${slot}`);
-    const url = (inputEl.value || "").trim();
+function setImageInputs(urls = []) {
+    const list = document.getElementById("imageInputsList");
+    const clean = (Array.isArray(urls) ? urls : []).map(u => String(u || "").trim()).filter(Boolean).slice(0, MAX_IMAGES);
+    const itemsToRender = clean.length ? clean : [""];
 
-    if (!url) {
-        boxEl.innerHTML = `Slide ${slot}`;
-        return;
+    list.innerHTML = itemsToRender.map((url, i) => `
+        <div class="image-url-row">
+            <input type="text" class="project-image-input" placeholder="Image URL ${i + 1} (https://...)" value="${escapeHtml(url)}" oninput="renderImageThumbnails()">
+            <button type="button" class="remove-img-btn" onclick="removeImageRow(this)" title="Remove">✕</button>
+        </div>
+    `).join("");
+
+    updateAddImageButtonState();
+    renderImageThumbnails();
+}
+
+function extractProjectImages(project) {
+    const urls = [];
+    if (project.ImageURL) {
+        String(project.ImageURL)
+            .split(/[\n,]+/)
+            .map(u => u.trim())
+            .filter(Boolean)
+            .forEach(u => urls.push(u));
     }
-
-    boxEl.innerHTML = `<img src="${url.replace(/"/g, "&quot;")}" alt="Slide ${slot} preview" onerror="this.parentElement.innerHTML='Invalid URL'">`;
+    ["ImageURL2", "ImageURL3", "ImageURL4", "ImageURL5", "Image1", "Image2", "Image3", "Image4", "Image5"].forEach(col => {
+        if (project[col] && String(project[col]).trim()) {
+            urls.push(String(project[col]).trim());
+        }
+    });
+    return [...new Set(urls)].slice(0, MAX_IMAGES);
 }
 
-function clearProjectForm() {
-    document.getElementById("projectName").value = "";
-    document.getElementById("technology").value = "";
-    document.getElementById("projectUrl").value = "";
-    document.getElementById("featuredProject").checked = false;
-    document.getElementById("imageUrl").value = "";
-    document.getElementById("imageUrl2").value = "";
-    document.getElementById("imageUrl3").value = "";
-    document.getElementById("imageUrl4").value = "";
-    document.getElementById("imageUrl5").value = "";
-    document.getElementById("projectOverview").value = "";
+function resetProjectForm() {
+    document.getElementById("projectForm").reset();
+    document.getElementById("editRowIndex").value = "";
+    document.getElementById("originalProjectName").value = "";
+    document.getElementById("featuredStatus").value = "No";
     document.getElementById("keyFeatures").value = "";
     document.getElementById("businessImpact").value = "";
     document.getElementById("architecture").value = "";
-
-    [1, 2, 3, 4, 5].forEach(slot => updateImagePreview(slot));
+    setImageInputs([""]);
+    document.getElementById("formHeading").innerText = "Add New Project";
+    document.getElementById("submitProjectBtn").innerText = "Add Project";
+    document.getElementById("cancelEditBtn").style.display = "none";
+    document.getElementById("status").innerText = "";
 }
 
-function cancelEditMode() {
-    editingProjectContext = null;
-    document.getElementById("editModeBanner").classList.remove("show");
-    document.getElementById("saveBtn").innerText = "Add Project";
-    clearProjectForm();
-}
+function startEditProject(cacheIndex) {
+    const project = adminProjectsCache[cacheIndex];
+    if (!project) return;
 
-function startEditProject(cacheIdx) {
-    const item = manageProjectsCache[cacheIdx];
-    if (!item) return;
+    const projName = (project.ProjectName || "").trim();
+    document.getElementById("editRowIndex").value = project._sheetRow || "";
+    document.getElementById("originalProjectName").value = projName;
+    document.getElementById("projectName").value = projName;
+    document.getElementById("technology").value = (project.Technology || "").trim();
+    document.getElementById("featuredStatus").value = isFeaturedValue(project.Featured || project.featured) ? "Yes" : "No";
+    setImageInputs(extractProjectImages(project));
+    document.getElementById("projectUrl").value = (project.ProjectURL || "").trim();
+    document.getElementById("projectOverview").value = (project["Project Overview"] || project.ProjectOverview || "").trim();
+    document.getElementById("keyFeatures").value = (project.KeyFeatures || "").trim();
+    document.getElementById("businessImpact").value = (project.BusinessImpact || "").trim();
+    document.getElementById("architecture").value = (project.Architecture || "").trim();
 
-    editingProjectContext = {
-        rowIndex: item.rowIndex,
-        originalProjectName: item.ProjectName || ""
-    };
+    document.getElementById("formHeading").innerText = `Edit Project: ${projName}`;
+    document.getElementById("submitProjectBtn").innerText = "Update Project";
+    document.getElementById("cancelEditBtn").style.display = "inline-block";
+    document.getElementById("status").style.color = "#00d4ff";
+    document.getElementById("status").innerText = `Editing "${projName}"...`;
 
-    document.getElementById("projectName").value = item.ProjectName || "";
-    document.getElementById("technology").value = item.Technology || "";
-    document.getElementById("projectUrl").value = item.ProjectURL || "";
-
-    const featVal = String(item.Featured || "").trim().toLowerCase();
-    document.getElementById("featuredProject").checked = ["yes", "true", "1", "featured", "pin", "pinned"].includes(featVal);
-
-    document.getElementById("imageUrl").value = item.ImageURL || "";
-    document.getElementById("imageUrl2").value = item.ImageURL2 || "";
-    document.getElementById("imageUrl3").value = item.ImageURL3 || "";
-    document.getElementById("imageUrl4").value = item.ImageURL4 || "";
-    document.getElementById("imageUrl5").value = item.ImageURL5 || "";
-
-    [1, 2, 3, 4, 5].forEach(slot => updateImagePreview(slot));
-
-    document.getElementById("projectOverview").value = item["Project Overview"] || item.ProjectOverview || "";
-    document.getElementById("keyFeatures").value = item.KeyFeatures || "";
-    document.getElementById("businessImpact").value = item.BusinessImpact || "";
-    document.getElementById("architecture").value = item.Architecture || "";
-
-    document.getElementById("editModeText").innerText = `Editing: "${item.ProjectName}" (Row ${item.rowIndex})`;
-    document.getElementById("editModeBanner").classList.add("show");
-    document.getElementById("saveBtn").innerText = "Save Changes";
-
-    switchTab("project");
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-async function saveProject(){
-    const saveBtn = document.getElementById("saveBtn");
-    hideStatus();
+async function deleteProject(cacheIndex) {
+    const project = adminProjectsCache[cacheIndex];
+    if (!project) return;
 
-    const isEditing = Boolean(editingProjectContext);
-    const isFeatured = document.getElementById("featuredProject").checked;
+    const projName = (project.ProjectName || "this project").trim();
+    const rowIndex = project._sheetRow || "";
 
-    const data = {
-        type: isEditing ? "update_project" : "project",
-        rowIndex: isEditing ? editingProjectContext.rowIndex : "",
-        originalProjectName: isEditing ? editingProjectContext.originalProjectName : "",
-        ProjectName: document.getElementById("projectName").value.trim(),
-        Technology: document.getElementById("technology").value.trim(),
-        ImageURL: document.getElementById("imageUrl").value.trim(),
-        ImageURL2: document.getElementById("imageUrl2").value.trim(),
-        ImageURL3: document.getElementById("imageUrl3").value.trim(),
-        ImageURL4: document.getElementById("imageUrl4").value.trim(),
-        ImageURL5: document.getElementById("imageUrl5").value.trim(),
-        ProjectURL: document.getElementById("projectUrl").value.trim(),
-        ProjectOverview: document.getElementById("projectOverview").value.trim(),
-        Featured: isFeatured ? "Yes" : "No",
-        KeyFeatures: document.getElementById("keyFeatures").value.trim(),
-        BusinessImpact: document.getElementById("businessImpact").value.trim(),
-        Architecture: document.getElementById("architecture").value.trim()
-    };
-
-    if(!data.ProjectName){
-        showStatus("error", "Please enter a Project Name before saving.");
-        document.getElementById("projectName").focus();
+    if (!confirm(`Are you sure you want to delete "${projName}"?`)) {
         return;
     }
 
-    saveBtn.disabled = true;
-    saveBtn.innerText = isEditing ? "Updating..." : "Saving...";
-
-    try{
-        await fetch(GAS_URL, {
-            method: "POST",
-            body: JSON.stringify(data)
-        });
-
-        if (isEditing) {
-            showStatus("success", `Project "${data.ProjectName}" updated successfully!`);
-            cancelEditMode();
-        } else {
-            showStatus("success", `Project "${data.ProjectName}" added successfully!`);
-            clearProjectForm();
-        }
-    }
-    catch(err){
-        showStatus("error", "Error saving project. Please check your connection or Apps Script deployment.");
-        console.error(err);
-    }
-    finally{
-        saveBtn.disabled = false;
-        saveBtn.innerText = editingProjectContext ? "Save Changes" : "Add Project";
-    }
-}
-
-async function loadManageProjects() {
-    const listEl = document.getElementById("manageProjectsList");
-    listEl.innerHTML = `<p style="color:#94a3b8;font-size:14px;">Loading projects...</p>`;
-
-    try {
-        const res = await fetch(SHEET_API);
-        const rows = await res.json();
-        manageProjectsCache = (Array.isArray(rows) ? rows : [])
-            .map((r, idx) => ({ ...r, rowIndex: idx + 2 }))
-            .filter(r => (r.ProjectName || "").trim() !== "");
-
-        renderManageList();
-    } catch (err) {
-        listEl.innerHTML = `<p style="color:#fca5a5;font-size:14px;">Unable to load projects from Google Sheet.</p>`;
-        console.error(err);
-    }
-}
-
-function renderManageList() {
-    const listEl = document.getElementById("manageProjectsList");
-    const q = (document.getElementById("manageSearch").value || "").trim().toLowerCase();
-
-    const filtered = manageProjectsCache
-        .map((item, idx) => ({ item, idx }))
-        .filter(({ item }) => {
-            if (!q) return true;
-            return (item.ProjectName || "").toLowerCase().includes(q) ||
-                   (item.Technology || "").toLowerCase().includes(q);
-        });
-
-    if (!filtered.length) {
-        listEl.innerHTML = `<p style="color:#94a3b8;font-size:14px;">No matching projects found.</p>`;
-        return;
-    }
-
-    listEl.innerHTML = filtered.map(({ item, idx }) => {
-        const featVal = String(item.Featured || "").trim().toLowerCase();
-        const isFeat = ["yes", "true", "1", "featured", "pin", "pinned"].includes(featVal);
-
-        return `
-        <div class="manage-item">
-            <div>
-                <div class="manage-item-title">
-                    <span>${escapeHtml(item.ProjectName)}</span>
-                    ${isFeat ? `<span class="manage-featured-tag">⭐ Featured</span>` : ""}
-                </div>
-                <div class="manage-item-meta">
-                    Row #${item.rowIndex} • ${escapeHtml(item.Technology || "Automation")}
-                </div>
-            </div>
-            <div class="manage-item-actions">
-                <button type="button" class="mini-btn" onclick="startEditProject(${idx})">✏️ Edit</button>
-                <button type="button" class="danger-btn" onclick="deleteProjectRow(${idx})">🗑 Delete</button>
-            </div>
-        </div>`;
-    }).join("");
-}
-
-async function deleteProjectRow(cacheIdx) {
-    const item = manageProjectsCache[cacheIdx];
-    if (!item) return;
-
-    const ok = confirm(`Are you sure you want to delete "${item.ProjectName}" (Row ${item.rowIndex})?`);
-    if (!ok) return;
-
-    hideStatus();
+    const statusEl = document.getElementById("status");
+    statusEl.style.color = "#00d4ff";
+    statusEl.innerText = `Deleting "${projName}"...`;
 
     try {
         await fetch(GAS_URL, {
             method: "POST",
             body: JSON.stringify({
                 type: "delete_project",
-                rowIndex: item.rowIndex,
-                ProjectName: item.ProjectName
+                rowIndex,
+                ProjectName: projName
             })
         });
 
-        showStatus("success", `Deleted "${item.ProjectName}" successfully.`);
-        if (editingProjectContext && editingProjectContext.rowIndex === item.rowIndex) {
-            cancelEditMode();
+        statusEl.style.color = "#4ade80";
+        statusEl.innerText = `"${projName}" deleted successfully.`;
+
+        if (document.getElementById("originalProjectName").value === projName) {
+            resetProjectForm();
         }
-        await loadManageProjects();
+
+        await loadAdminProjects();
     } catch (err) {
-        showStatus("error", "Error deleting project.");
+        statusEl.style.color = "#f87171";
+        statusEl.innerText = "Error deleting project.";
         console.error(err);
     }
 }
 
-async function saveStats(){
-    const saveStatsBtn = document.getElementById("saveStatsBtn");
-    hideStatus();
+document.getElementById("projectForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-    const projectsVal = document.getElementById("statProjects").value.trim();
-    const dashboardsVal = document.getElementById("statDashboards").value.trim();
-    const automationsVal = document.getElementById("statAutomations").value.trim();
-    const businessVal = document.getElementById("statBusiness").value.trim();
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submitProjectBtn");
+    const editRowIndex = document.getElementById("editRowIndex").value.trim();
+    const originalProjectName = document.getElementById("originalProjectName").value.trim();
+    const isEditing = Boolean(editRowIndex || originalProjectName);
 
-    if (!projectsVal && !dashboardsVal && !automationsVal && !businessVal) {
-        showStatus("error", "Please enter at least one stat value to update.");
-        return;
-    }
-
-    saveStatsBtn.disabled = true;
-    saveStatsBtn.innerText = "Updating...";
-
+    const images = getCollectedImages();
     const payload = {
-        type: "stats",
-        Projects: projectsVal,
-        Dashboards: dashboardsVal,
-        Automations: automationsVal,
-        BusinessSolutions: businessVal
+        type: isEditing ? "update_project" : "project",
+        rowIndex: editRowIndex ? Number(editRowIndex) : "",
+        originalProjectName,
+        ProjectName: document.getElementById("projectName").value.trim(),
+        Technology: document.getElementById("technology").value.trim(),
+        Featured: document.getElementById("featuredStatus").value,
+        images,
+        ImageURL: images[0] || "",
+        ImageURL2: images[1] || "",
+        ImageURL3: images[2] || "",
+        ImageURL4: images[3] || "",
+        ImageURL5: images[4] || "",
+        ProjectURL: document.getElementById("projectUrl").value.trim(),
+        ProjectOverview: document.getElementById("projectOverview").value.trim(),
+        KeyFeatures: document.getElementById("keyFeatures").value.trim(),
+        BusinessImpact: document.getElementById("businessImpact").value.trim(),
+        Architecture: document.getElementById("architecture").value.trim()
     };
+
+    submitBtn.disabled = true;
+    statusEl.style.color = "#00d4ff";
+    statusEl.innerText = isEditing ? "Updating project..." : "Adding project...";
 
     try {
         await fetch(GAS_URL, {
@@ -868,15 +672,245 @@ async function saveStats(){
             body: JSON.stringify(payload)
         });
 
-        showStatus("success", "Stats updated successfully!");
+        statusEl.style.color = "#4ade80";
+        statusEl.innerText = isEditing
+            ? "Project updated successfully!"
+            : "Project added successfully!";
+
+        resetProjectForm();
+        await loadAdminProjects();
     } catch (err) {
-        showStatus("error", "Error updating stats. Make sure your Code.gs supports type === 'stats'.");
+        statusEl.style.color = "#f87171";
+        statusEl.innerText = "Error saving project.";
         console.error(err);
     } finally {
-        saveStatsBtn.disabled = false;
-        saveStatsBtn.innerText = "Update Stats";
+        submitBtn.disabled = false;
+    }
+});
+
+async function loadAdminProjects() {
+    const listEl = document.getElementById("adminProjectsList");
+    listEl.innerHTML = `<p class="hint">Loading projects...</p>`;
+
+    try {
+        const res = await fetch(SHEET_API);
+        const rows = await res.json();
+
+        const mapped = (Array.isArray(rows) ? rows : [])
+            .map((row, idx) => ({ ...row, _sheetRow: idx + 2 }))
+            .filter(row => (row.ProjectName || "").trim() !== "");
+
+        adminProjectsCache = mapped;
+
+        if (!mapped.length) {
+            listEl.innerHTML = `<p class="hint">No projects found in Sheet1.</p>`;
+            return;
+        }
+
+        listEl.innerHTML = mapped.map((proj, i) => {
+            const name = (proj.ProjectName || "").trim();
+            const tech = (proj.Technology || "").trim();
+            const featured = isFeaturedValue(proj.Featured || proj.featured);
+            const imgCount = extractProjectImages(proj).length;
+            const badgeHtml = featured
+                ? `<span class="badge badge-featured">⭐ Featured</span>`
+                : `<span class="badge badge-normal">Normal</span>`;
+
+            return `
+            <div class="project-item">
+                <div>
+                    <div class="project-item-title">
+                        <span>${escapeHtml(name)}</span>
+                        ${badgeHtml}
+                    </div>
+                    <div class="project-item-sub">
+                        Row #${proj._sheetRow} • Tech: ${escapeHtml(tech || "-")} • Images: ${imgCount}/${MAX_IMAGES}
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button type="button" onclick="startEditProject(${i})">Edit</button>
+                    <button type="button" class="btn-danger" onclick="deleteProject(${i})">Delete</button>
+                </div>
+            </div>`;
+        }).join("");
+    } catch (err) {
+        listEl.innerHTML = `<p class="hint" style="color:#f87171;">Failed to load projects list.</p>`;
+        console.error(err);
     }
 }
+
+/* Feedback Management */
+async function loadAdminFeedbacks() {
+    const listEl = document.getElementById("adminFeedbacksList");
+    listEl.innerHTML = `<p class="hint">Loading feedbacks...</p>`;
+
+    try {
+        const res = await fetch(FEEDBACK_API);
+        const rows = await res.json();
+
+        const mapped = (Array.isArray(rows) ? rows : [])
+            .map((row, idx) => ({ ...row, _sheetRow: idx + 2 }))
+            .filter(row => (row.Feedback || "").trim() !== "" || (row.Name || "").trim() !== "");
+
+        if (!mapped.length) {
+            listEl.innerHTML = `<p class="hint">No feedback entries found yet.</p>`;
+            return;
+        }
+
+        listEl.innerHTML = mapped.map(item => {
+            const name = (item.Name || "Anonymous").trim();
+            const role = (item.Role || "Visitor").trim();
+            const text = (item.Feedback || "").trim();
+            const rating = item.Rating || "5";
+            const isApproved = ["yes", "true", "1", "approved"].includes(
+                String(item.Approved || "").trim().toLowerCase()
+            );
+
+            const statusBadge = isApproved
+                ? `<span class="badge badge-approved">✓ Approved (Live)</span>`
+                : `<span class="badge badge-pending">⏳ Pending Approval</span>`;
+
+            const toggleBtn = isApproved
+                ? `<button type="button" class="btn-secondary" onclick="setFeedbackApproval(${item._sheetRow}, 'No')">Unapprove</button>`
+                : `<button type="button" class="btn-approve" onclick="setFeedbackApproval(${item._sheetRow}, 'Yes')">Approve</button>`;
+
+            return `
+            <div class="project-item">
+                <div style="flex:1;min-width:240px;">
+                    <div class="project-item-title">
+                        <span>${escapeHtml(name)}</span>
+                        <span style="font-size:13px;color:#94a3b8;font-weight:500;">(${escapeHtml(role)})</span>
+                        ${statusBadge}
+                    </div>
+                    <div class="project-item-sub" style="color:#e2e8f0;margin-top:6px;">
+                        "${escapeHtml(text)}"
+                    </div>
+                    <div class="project-item-sub">
+                        Row #${item._sheetRow} • Rating: ${escapeHtml(String(rating))} / 5
+                    </div>
+                </div>
+                <div class="item-actions">
+                    ${toggleBtn}
+                    <button type="button" class="btn-danger" onclick="deleteFeedbackItem(${item._sheetRow}, '${escapeHtml(name)}')">Delete</button>
+                </div>
+            </div>`;
+        }).join("");
+    } catch (err) {
+        listEl.innerHTML = `<p class="hint" style="color:#f87171;">Failed to load feedbacks (check if 'Feedback' tab exists and is shared).</p>`;
+        console.error(err);
+    }
+}
+
+async function setFeedbackApproval(rowIndex, approvedValue) {
+    const statusEl = document.getElementById("status");
+    statusEl.style.color = "#00d4ff";
+    statusEl.innerText = approvedValue === "Yes" ? "Approving feedback..." : "Unapproving feedback...";
+
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                type: "approve_feedback",
+                rowIndex,
+                approved: approvedValue
+            })
+        });
+
+        statusEl.style.color = "#4ade80";
+        statusEl.innerText = approvedValue === "Yes"
+            ? "Feedback approved and now visible on the homepage!"
+            : "Feedback hidden from the homepage.";
+
+        await loadAdminFeedbacks();
+    } catch (err) {
+        statusEl.style.color = "#f87171";
+        statusEl.innerText = "Error updating feedback approval.";
+        console.error(err);
+    }
+}
+
+async function deleteFeedbackItem(rowIndex, name) {
+    if (!confirm(`Delete feedback from "${name}"?`)) return;
+
+    const statusEl = document.getElementById("status");
+    statusEl.style.color = "#00d4ff";
+    statusEl.innerText = "Deleting feedback...";
+
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                type: "delete_feedback",
+                rowIndex
+            })
+        });
+
+        statusEl.style.color = "#4ade80";
+        statusEl.innerText = "Feedback deleted.";
+        await loadAdminFeedbacks();
+    } catch (err) {
+        statusEl.style.color = "#f87171";
+        statusEl.innerText = "Error deleting feedback.";
+        console.error(err);
+    }
+}
+
+/* Stats Load & Save */
+async function loadCurrentStats() {
+    try {
+        const res = await fetch(STATS_API);
+        const data = await res.json();
+        if (data && data[0]) {
+            document.getElementById("statProjects").value = data[0].Projects ?? 15;
+            document.getElementById("statDashboards").value = data[0].Dashboards ?? 25;
+            document.getElementById("statAutomations").value = data[0].Automations ?? 30;
+            document.getElementById("statBusiness").value = data[0].BusinessSolutions ?? 10;
+        }
+    } catch (err) {
+        console.log("Stats load fallback:", err);
+    }
+}
+
+document.getElementById("statsForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const statsStatus = document.getElementById("statsStatus");
+    const saveBtn = document.getElementById("saveStatsBtn");
+
+    const payload = {
+        type: "stats",
+        Projects: Number(document.getElementById("statProjects").value),
+        Dashboards: Number(document.getElementById("statDashboards").value),
+        Automations: Number(document.getElementById("statAutomations").value),
+        BusinessSolutions: Number(document.getElementById("statBusiness").value)
+    };
+
+    saveBtn.disabled = true;
+    statsStatus.style.color = "#00d4ff";
+    statsStatus.innerText = "Saving stats...";
+
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+
+        statsStatus.style.color = "#4ade80";
+        statsStatus.innerText = "Stats updated successfully!";
+    } catch (err) {
+        statsStatus.style.color = "#f87171";
+        statsStatus.innerText = "Error saving stats.";
+        console.error(err);
+    } finally {
+        saveBtn.disabled = false;
+    }
+});
+
+updateAddImageButtonState();
+renderImageThumbnails();
+loadAdminProjects();
+loadAdminFeedbacks();
+loadCurrentStats();
 </script>
 
 </body>
