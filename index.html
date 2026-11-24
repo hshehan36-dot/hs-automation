@@ -181,6 +181,12 @@ transform:translateY(-2px);
 box-shadow:0 8px 20px rgba(0,212,255,.35);
 }
 
+.btn:disabled{
+opacity:.65;
+cursor:not-allowed;
+transform:none;
+}
+
 .btn-ghost{
 display:inline-block;
 padding:10px 16px;
@@ -676,7 +682,7 @@ padding:36px 20px;
 color:#cbd5e1;
 }
 
-/* Quick Preview Modal */
+/* Modals (Quick Preview & Give Feedback) */
 .modal-backdrop{
 position:fixed;
 inset:0;
@@ -756,6 +762,27 @@ gap:10px;
 flex-wrap:wrap;
 }
 
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea{
+width:100%;
+padding:11px 14px;
+margin-bottom:12px;
+border:1px solid rgba(255,255,255,.15);
+border-radius:10px;
+background:#071426;
+color:white;
+font-size:14px;
+font-family:'Segoe UI',sans-serif;
+outline:none;
+}
+
+.feedback-form input:focus,
+.feedback-form select:focus,
+.feedback-form textarea:focus{
+border-color:#00d4ff;
+}
+
 .skills{
 display:grid;
 gap:20px;
@@ -782,6 +809,12 @@ background:#00d4ff;
 }
 
 /* Testimonials */
+.testimonials-top{
+display:flex;
+justify-content:flex-end;
+margin-bottom:22px;
+}
+
 .testimonials-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -803,6 +836,13 @@ transition:.25s;
 .testimonial-card:hover{
 transform:translateY(-6px);
 border-color:rgba(0,212,255,.55);
+}
+
+.testimonial-stars{
+color:#facc15;
+font-size:14px;
+letter-spacing:2px;
+margin-bottom:8px;
 }
 
 .testimonial-quote{
@@ -1177,7 +1217,7 @@ oninput="applyProjectFilters()">
 </div>
 <h3 id="modalTitle" style="margin-top:8px;"></h3>
 </div>
-<button class="modal-close" onclick="closeProjectModal()" aria-label="Close">×</button>
+<button type="button" class="modal-close" onclick="closeProjectModal()" aria-label="Close">×</button>
 </div>
 <div class="modal-body" id="modalOverview"></div>
 <div class="modal-footer">
@@ -1186,6 +1226,38 @@ oninput="applyProjectFilters()">
 <button type="button" class="btn-ghost" onclick="closeProjectModal()">Close</button>
 <a class="btn" id="modalFullLink" href="#">Open Full Details →</a>
 </div>
+</div>
+</div>
+
+<!-- Give Feedback Modal -->
+<div class="modal-backdrop" id="feedbackModal" onclick="closeFeedbackModalOnBackdrop(event)">
+<div class="modal-card">
+<div class="modal-header">
+<div>
+<span class="tech-badge">Share Your Experience</span>
+<h3 style="margin-top:8px;">Submit Client / Team Feedback</h3>
+</div>
+<button type="button" class="modal-close" onclick="closeFeedbackModal()" aria-label="Close">×</button>
+</div>
+
+<div id="feedbackModalStatus" class="form-feedback" role="alert"></div>
+
+<form class="feedback-form" id="feedbackSubmitForm" onsubmit="submitFeedback(event)">
+<input type="text" id="fbName" placeholder="Your Name *" required>
+<input type="text" id="fbRole" placeholder="Your Role / Company (Optional)">
+<select id="fbRating" aria-label="Rating">
+<option value="5">★★★★★ (5 / 5)</option>
+<option value="4">★★★★☆ (4 / 5)</option>
+<option value="3">★★★☆☆ (3 / 5)</option>
+<option value="2">★★☆☆☆ (2 / 5)</option>
+<option value="1">★☆☆☆☆ (1 / 5)</option>
+</select>
+<textarea id="fbMessage" rows="4" placeholder="Write your feedback *" required></textarea>
+<div class="modal-footer" style="margin-top:6px;">
+<button type="button" class="btn-ghost" onclick="closeFeedbackModal()">Cancel</button>
+<button type="submit" class="btn" id="fbSubmitBtn">Submit Feedback</button>
+</div>
+</form>
 </div>
 </div>
 
@@ -1219,11 +1291,18 @@ oninput="applyProjectFilters()">
 <section id="testimonials">
 <h2 class="section-title">Client & Team Feedback</h2>
 
-<div class="testimonials-grid">
+<div class="testimonials-top">
+<button type="button" class="btn" onclick="openFeedbackModal()">+ Give Feedback</button>
+</div>
+
+<div class="testimonials-grid" id="testimonialsGrid">
 <div class="testimonial-card">
+<div>
+<div class="testimonial-stars">★★★★★</div>
 <p class="testimonial-quote">
 "Hasitha turns complex operational tracking sheets into clean, reliable dashboards and automated workflows that save hours of manual follow-up every week."
 </p>
+</div>
 <div class="testimonial-author">
 <div class="testimonial-name">Operations & Analytics Lead</div>
 <div class="testimonial-role">Enterprise Reporting & Process Automation</div>
@@ -1231,9 +1310,12 @@ oninput="applyProjectFilters()">
 </div>
 
 <div class="testimonial-card">
+<div>
+<div class="testimonial-stars">★★★★★</div>
 <p class="testimonial-quote">
 "From structured data modeling and DAX measures to user-friendly intake forms and notifications, the solutions are practical, fast, and easy for teams to adopt."
 </p>
+</div>
 <div class="testimonial-author">
 <div class="testimonial-name">EHS & Compliance Stakeholder</div>
 <div class="testimonial-role">Digital Tracking & Action Workflows</div>
@@ -1241,9 +1323,12 @@ oninput="applyProjectFilters()">
 </div>
 
 <div class="testimonial-card">
+<div>
+<div class="testimonial-stars">★★★★★</div>
 <p class="testimonial-quote">
 "Strong analytical mindset combined with hands-on automation skills—requirements are quickly translated into working tools with clear visibility."
 </p>
+</div>
 <div class="testimonial-author">
 <div class="testimonial-name">Project Collaborator</div>
 <div class="testimonial-role">Power Platform & Web Automation</div>
@@ -1319,6 +1404,7 @@ LinkedIn Profile
 <script>
 const SHEET_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Sheet1";
 const STATS_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Stats";
+const FEEDBACK_API = "https://opensheet.elk.sh/15nUhkv9EJ-7zbNL9y45y2REb2Acr3azwUspUyAlVaSY/Feedback";
 const GAS_URL = "https://script.google.com/macros/s/AKfycbx4hwuPAWRkBUO97RL88XoY8_zvpAYPWdRbeyxZmbfez9DQOgQCEJMp4in0dQkNQPvUzQ/exec";
 
 let loadedProjectsData = [];
@@ -1413,7 +1499,6 @@ function requestSimilarSolution(projectName, tech) {
     setTimeout(() => msgBox.focus(), 350);
 }
 
-/* Apply URL query ?similar=... if coming from project.html */
 (function checkSimilarQuery() {
     const qParams = new URLSearchParams(window.location.search);
     const similarName = (qParams.get("similar") || "").trim();
@@ -1738,14 +1823,126 @@ function closeModalOnBackdrop(e) {
     }
 }
 
+/* Feedback Modal & Approved Sheet Loader */
+function openFeedbackModal() {
+    const statusBox = document.getElementById("feedbackModalStatus");
+    statusBox.className = "form-feedback";
+    statusBox.innerText = "";
+    document.getElementById("feedbackModal").classList.add("active");
+    setTimeout(() => document.getElementById("fbName").focus(), 100);
+}
+
+function closeFeedbackModal() {
+    document.getElementById("feedbackModal").classList.remove("active");
+}
+
+function closeFeedbackModalOnBackdrop(e) {
+    if (e.target.id === "feedbackModal") {
+        closeFeedbackModal();
+    }
+}
+
+async function submitFeedback(e) {
+    e.preventDefault();
+    const nameEl = document.getElementById("fbName");
+    const roleEl = document.getElementById("fbRole");
+    const ratingEl = document.getElementById("fbRating");
+    const msgEl = document.getElementById("fbMessage");
+    const btnEl = document.getElementById("fbSubmitBtn");
+    const statusBox = document.getElementById("feedbackModalStatus");
+
+    const name = nameEl.value.trim();
+    const role = roleEl.value.trim();
+    const rating = Number(ratingEl.value || 5);
+    const feedback = msgEl.value.trim();
+
+    if (!name || !feedback) {
+        statusBox.className = "form-feedback show error";
+        statusBox.innerText = "Please enter your name and feedback message.";
+        return;
+    }
+
+    btnEl.disabled = true;
+    btnEl.innerText = "Submitting...";
+
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                type: "feedback",
+                name,
+                role,
+                rating,
+                feedback
+            })
+        });
+
+        statusBox.className = "form-feedback show success";
+        statusBox.innerText = "Thank you! Your feedback has been submitted and sent for review.";
+        nameEl.value = "";
+        roleEl.value = "";
+        msgEl.value = "";
+        ratingEl.value = "5";
+    } catch (err) {
+        statusBox.className = "form-feedback show error";
+        statusBox.innerText = "Could not submit feedback right now. Please try again later.";
+        console.error(err);
+    } finally {
+        btnEl.disabled = false;
+        btnEl.innerText = "Submit Feedback";
+    }
+}
+
+async function loadApprovedFeedbacks() {
+    const grid = document.getElementById("testimonialsGrid");
+    if (!grid) return;
+
+    try {
+        const res = await fetch(FEEDBACK_API);
+        const rows = await res.json();
+        if (!Array.isArray(rows)) return;
+
+        const approved = rows.filter(r => {
+            const status = String(r.Approved || "").trim().toLowerCase();
+            return ["yes", "true", "1", "approved"].includes(status) && (r.Feedback || "").trim() !== "";
+        });
+
+        approved.forEach(item => {
+            const name = (item.Name || "Client / Colleague").trim();
+            const role = (item.Role || "Verified Feedback").trim();
+            const text = (item.Feedback || "").trim();
+            const starsCount = Math.min(Math.max(Number(item.Rating || 5) || 5, 1), 5);
+            const starsStr = "★".repeat(starsCount) + "☆".repeat(5 - starsCount);
+
+            const card = document.createElement("div");
+            card.className = "testimonial-card";
+            card.innerHTML = `
+                <div>
+                    <div class="testimonial-stars">${starsStr}</div>
+                    <p class="testimonial-quote">"${escapeHtml(text)}"</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="testimonial-name">${escapeHtml(name)}</div>
+                    <div class="testimonial-role">${escapeHtml(role)}</div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    } catch (err) {
+        console.log("Feedback load skipped:", err);
+    }
+}
+
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         closeProjectModal();
+        closeFeedbackModal();
         closeMobileMenu();
     }
 });
 
 loadProjects();
+loadApprovedFeedbacks();
 
 /* Load Stats From Google Sheet & Animate */
 async function loadStats() {
