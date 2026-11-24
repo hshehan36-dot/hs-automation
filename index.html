@@ -960,10 +960,10 @@ text-decoration:none;
 border-radius:8px;
 }
 
-/* Back-to-Top & WhatsApp Floating Buttons */
+/* Back-to-Top, Animated AI Button & WhatsApp Floating Buttons */
 .back-to-top{
 position:fixed;
-bottom:102px;
+bottom:170px;
 right:31px;
 width:52px;
 height:52px;
@@ -990,6 +990,199 @@ display:flex;
 background:#00d4ff;
 color:#071426;
 transform:translateY(-3px);
+}
+
+@keyframes aiPulseRing{
+0%{
+box-shadow:0 0 0 0 rgba(0,212,255,.65), 0 8px 22px rgba(0,212,255,.35);
+}
+70%{
+box-shadow:0 0 0 14px rgba(0,212,255,0), 0 10px 24px rgba(0,212,255,.4);
+}
+100%{
+box-shadow:0 0 0 0 rgba(0,212,255,0), 0 8px 22px rgba(0,212,255,.35);
+}
+}
+
+@keyframes aiSparkleFloat{
+0%, 100%{
+transform:translateY(0) rotate(0deg) scale(1);
+}
+50%{
+transform:translateY(-2px) rotate(12deg) scale(1.12);
+}
+}
+
+.ai-fab-btn{
+position:fixed;
+bottom:102px;
+right:28px;
+width:58px;
+height:58px;
+border-radius:50%;
+border:2px solid rgba(255,255,255,.35);
+background:linear-gradient(135deg,#00d4ff 0%,#0284c7 100%);
+color:#071426;
+font-weight:800;
+cursor:pointer;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:1px;
+z-index:900;
+animation:aiPulseRing 2.2s infinite;
+transition:transform .2s ease;
+}
+
+.ai-fab-btn:hover{
+transform:scale(1.08);
+}
+
+.ai-fab-icon{
+font-size:18px;
+line-height:1;
+display:inline-block;
+animation:aiSparkleFloat 2s ease-in-out infinite;
+}
+
+.ai-fab-label{
+font-size:10px;
+font-weight:900;
+letter-spacing:.4px;
+line-height:1;
+}
+
+.ai-chat-popup{
+position:fixed;
+bottom:172px;
+right:25px;
+width:350px;
+max-width:calc(100vw - 32px);
+height:440px;
+max-height:calc(100vh - 190px);
+background:#0c1d34;
+border:1px solid rgba(0,212,255,.45);
+border-radius:18px;
+box-shadow:0 20px 50px rgba(0,0,0,.65);
+display:none;
+flex-direction:column;
+overflow:hidden;
+z-index:1500;
+animation:popIn .2s ease;
+}
+
+.ai-chat-popup.open{
+display:flex;
+}
+
+.ai-chat-head{
+background:#081527;
+padding:12px 15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.ai-chat-head-title{
+color:#00d4ff;
+font-weight:700;
+font-size:15px;
+}
+
+.ai-chat-head-sub{
+color:#94a3b8;
+font-size:11px;
+}
+
+.ai-chat-close{
+background:rgba(255,255,255,.08);
+color:#cbd5e1;
+border:none;
+width:30px;
+height:30px;
+border-radius:50%;
+font-size:18px;
+cursor:pointer;
+}
+
+.ai-chat-close:hover{
+background:rgba(255,255,255,.18);
+color:white;
+}
+
+.ai-chat-body{
+flex:1;
+padding:12px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:9px;
+}
+
+.ai-bubble{
+max-width:85%;
+padding:9px 12px;
+border-radius:13px;
+font-size:13.5px;
+line-height:1.5;
+white-space:pre-line;
+word-wrap:break-word;
+}
+
+.ai-bubble.bot{
+align-self:flex-start;
+background:#142c4d;
+color:#e2e8f0;
+border-bottom-left-radius:4px;
+}
+
+.ai-bubble.user{
+align-self:flex-end;
+background:#00d4ff;
+color:#071426;
+font-weight:600;
+border-bottom-right-radius:4px;
+}
+
+.ai-chat-form{
+display:flex;
+gap:8px;
+padding:10px 12px;
+background:#081527;
+border-top:1px solid rgba(255,255,255,.08);
+}
+
+.ai-chat-input{
+flex:1;
+padding:9px 12px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,.15);
+background:#0c1d34;
+color:white;
+font-size:13.5px;
+outline:none;
+}
+
+.ai-chat-input:focus{
+border-color:#00d4ff;
+}
+
+.ai-chat-send{
+padding:0 14px;
+border-radius:10px;
+border:none;
+background:#00d4ff;
+color:#071426;
+font-weight:700;
+font-size:13px;
+cursor:pointer;
+}
+
+.ai-chat-send:disabled{
+opacity:.55;
+cursor:not-allowed;
 }
 
 .whatsapp{
@@ -1399,6 +1592,30 @@ LinkedIn Profile
 </div>
 
 <button type="button" class="back-to-top" id="backToTopBtn" onclick="scrollToTop()" aria-label="Back to top" title="Back to top">↑</button>
+
+<!-- Animated AI Chat Button & Popup (Above WhatsApp) -->
+<button type="button" class="ai-fab-btn" id="aiFabBtn" onclick="toggleAiChatPopup()" aria-label="Open Gemini AI Chat" title="Ask Gemini AI">
+<span class="ai-fab-icon">✨</span>
+<span class="ai-fab-label">AI</span>
+</button>
+
+<div class="ai-chat-popup" id="aiChatPopup" role="dialog" aria-label="HS Gemini AI Assistant">
+<div class="ai-chat-head">
+<div>
+<div class="ai-chat-head-title">HS Gemini Assistant</div>
+<div class="ai-chat-head-sub">Ask about services, projects & 3W demo</div>
+</div>
+<button type="button" class="ai-chat-close" onclick="toggleAiChatPopup()" aria-label="Close AI chat">×</button>
+</div>
+<div class="ai-chat-body" id="aiChatBody">
+<div class="ai-bubble bot">Hi! Ask me anything about HS Automation Solutions, our projects, or services.</div>
+</div>
+<form class="ai-chat-form" onsubmit="sendGeminiChat(event)">
+<input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Ask something..." maxlength="500" autocomplete="off" required>
+<button type="submit" class="ai-chat-send" id="aiChatSendBtn">Send</button>
+</form>
+</div>
+
 <a class="whatsapp" href="https://wa.me/94769176616" target="_blank" aria-label="WhatsApp">💬</a>
 
 <script>
@@ -1411,6 +1628,7 @@ let loadedProjectsData = [];
 let selectedTech = "ALL";
 const cardSlideStates = {};
 let cardAutoTimer = null;
+let aiLastSent = 0;
 
 /* Scroll Progress & Back-to-Top */
 window.addEventListener("scroll", () => {
@@ -1933,10 +2151,69 @@ async function loadApprovedFeedbacks() {
     }
 }
 
+/* Gemini AI Chat Popup */
+function toggleAiChatPopup() {
+    const popup = document.getElementById("aiChatPopup");
+    const isOpen = popup.classList.toggle("open");
+    if (isOpen) {
+        setTimeout(() => document.getElementById("aiChatInput").focus(), 100);
+    }
+}
+
+function addAiChatBubble(role, text) {
+    const bodyEl = document.getElementById("aiChatBody");
+    const bubble = document.createElement("div");
+    bubble.className = `ai-bubble ${role === "user" ? "user" : "bot"}`;
+    bubble.innerText = text;
+    bodyEl.appendChild(bubble);
+    bodyEl.scrollTop = bodyEl.scrollHeight;
+    return bubble;
+}
+
+async function sendGeminiChat(e) {
+    e.preventDefault();
+    if (Date.now() - aiLastSent < 2000) return;
+    aiLastSent = Date.now();
+
+    const inp = document.getElementById("aiChatInput");
+    const btn = document.getElementById("aiChatSendBtn");
+    const msg = (inp.value || "").trim();
+    if (!msg) return;
+
+    inp.value = "";
+    addAiChatBubble("user", msg);
+    const botBubble = addAiChatBubble("bot", "Thinking...");
+    btn.disabled = true;
+
+    const projectSummary = Array.isArray(loadedProjectsData)
+        ? loadedProjectsData.slice(0, 12).map(p => `${p.ProjectName} (${p.Technology || "Automation"})`).join(", ")
+        : "";
+
+    try {
+        const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                type: "chat",
+                message: msg,
+                context: "Services: Power Apps, Power BI Dashboards, Power Automate, SharePoint Solutions, Email Automation, Business Process Automation. Live Demo: 3W Management System. Projects: " + projectSummary
+            })
+        });
+
+        const data = await res.json();
+        botBubble.innerText = data?.reply || "No response received.";
+    } catch (err) {
+        botBubble.innerText = "Unable to connect right now. Please try again.";
+        console.error(err);
+    } finally {
+        btn.disabled = false;
+    }
+}
+
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         closeProjectModal();
         closeFeedbackModal();
+        document.getElementById("aiChatPopup").classList.remove("open");
         closeMobileMenu();
     }
 });
