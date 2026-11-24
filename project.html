@@ -20,9 +20,9 @@ line-height:1.6;
 }
 
 .container{
-max-width:980px;
+max-width:1000px;
 margin:auto;
-padding:48px 24px 70px;
+padding:44px 22px 75px;
 }
 
 .top-bar{
@@ -31,7 +31,7 @@ justify-content:space-between;
 align-items:center;
 flex-wrap:wrap;
 gap:12px;
-margin-bottom:28px;
+margin-bottom:24px;
 }
 
 .back-btn{
@@ -93,9 +93,17 @@ background:rgba(0,212,255,.15);
 background:linear-gradient(135deg,#0f2442 0%,#13315c 100%);
 border:1px solid rgba(0,212,255,.3);
 border-radius:22px;
-padding:36px;
-margin-bottom:24px;
+padding:34px;
+margin-bottom:22px;
 box-shadow:0 14px 34px rgba(0,0,0,.35);
+}
+
+.badge-row{
+display:flex;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:14px;
 }
 
 .tech-pill{
@@ -107,12 +115,24 @@ padding:6px 14px;
 border-radius:999px;
 font-size:13px;
 font-weight:600;
-margin-bottom:14px;
+}
+
+.featured-pill{
+display:inline-flex;
+align-items:center;
+gap:5px;
+background:rgba(250, 204, 21, .16);
+color:#fde047;
+border:1px solid rgba(250, 204, 21, .45);
+padding:6px 14px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
 }
 
 h1{
 color:white;
-font-size:40px;
+font-size:38px;
 line-height:1.2;
 }
 
@@ -250,6 +270,7 @@ cursor:pointer;
 background:rgba(0,212,255,.22);
 }
 
+/* Case Study Blocks */
 .card{
 background:#10233d;
 border:1px solid rgba(255,255,255,.06);
@@ -258,11 +279,22 @@ border-radius:18px;
 margin-top:20px;
 }
 
+.two-col-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.two-col-grid .card{
+margin-top:0;
+}
+
 .label{
 color:#00d4ff;
 font-size:18px;
 font-weight:700;
-margin-bottom:12px;
+margin-bottom:14px;
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -297,6 +329,113 @@ line-height:1.5;
 font-size:15px;
 }
 
+.feature-list{
+list-style:none;
+display:grid;
+gap:10px;
+color:#e2e8f0;
+font-size:15px;
+}
+
+.feature-list li{
+padding-left:22px;
+position:relative;
+line-height:1.65;
+}
+
+.feature-list li::before{
+content:"▹";
+position:absolute;
+left:0;
+color:#00d4ff;
+font-weight:bold;
+}
+
+.block-text{
+color:#cbd5e1;
+font-size:15px;
+line-height:1.75;
+white-space:pre-line;
+}
+
+.arch-tags{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:14px;
+}
+
+.arch-tag{
+background:rgba(0,212,255,.1);
+color:#7dd3fc;
+border:1px solid rgba(0,212,255,.28);
+padding:5px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:600;
+}
+
+/* Prev / Next Project Navigation */
+.project-nav-bar{
+margin-top:26px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+.proj-nav-card{
+background:#0f233e;
+border:1px solid rgba(0,212,255,.22);
+border-radius:16px;
+padding:18px 20px;
+text-decoration:none;
+color:white;
+display:flex;
+flex-direction:column;
+gap:6px;
+transition:.22s;
+}
+
+.proj-nav-card:hover{
+border-color:#00d4ff;
+transform:translateY(-3px);
+box-shadow:0 12px 24px rgba(0,0,0,.35);
+}
+
+.proj-nav-card.next-card{
+text-align:right;
+align-items:flex-end;
+}
+
+.proj-nav-dir{
+font-size:12px;
+font-weight:700;
+color:#00d4ff;
+text-transform:uppercase;
+letter-spacing:.05em;
+}
+
+.proj-nav-title{
+font-size:16px;
+font-weight:700;
+color:#f1f5f9;
+}
+
+.proj-nav-placeholder{
+background:#0b182b;
+border:1px dashed rgba(255,255,255,.1);
+border-radius:16px;
+padding:18px 20px;
+color:#64748b;
+font-size:14px;
+display:flex;
+align-items:center;
+}
+
+.proj-nav-placeholder.next-card{
+justify-content:flex-end;
+}
+
 @media(max-width:640px){
 h1{
 font-size:28px;
@@ -311,6 +450,13 @@ height:260px;
 width:52px;
 height:36px;
 }
+.project-nav-bar{
+grid-template-columns:1fr;
+}
+.proj-nav-card.next-card{
+text-align:left;
+align-items:flex-start;
+}
 }
 </style>
 </head>
@@ -324,7 +470,10 @@ height:36px;
     </div>
 
     <div class="hero-card">
-        <span class="tech-pill" id="projectTechnology">Loading...</span>
+        <div class="badge-row">
+            <span class="tech-pill" id="projectTechnology">Loading...</span>
+            <span class="featured-pill" id="projectFeaturedBadge" style="display:none;">⭐ Featured Project</span>
+        </div>
         <h1 id="projectTitle">Loading Project...</h1>
         <p class="meta-row" id="projectMeta">HS Automation Solutions • Case Study</p>
         <a id="projectLiveUrl" class="live-btn" href="#" target="_blank" rel="noopener" style="display:none;">Open Live Solution ↗</a>
@@ -344,12 +493,45 @@ height:36px;
         </div>
     </div>
 
+    <!-- Overview Block -->
     <div class="card">
         <div class="label">
             <span>Project Overview</span>
             <button type="button" class="toggle-btn" onclick="toggleLineSpacing()">Adjust Reading Spacing</button>
         </div>
         <p id="projectOverview">Fetching project details...</p>
+    </div>
+
+    <!-- Key Features Block -->
+    <div class="card" id="keyFeaturesCard" style="display:none;">
+        <div class="label">
+            <span>Key Features & Highlights</span>
+        </div>
+        <ul class="feature-list" id="keyFeaturesList"></ul>
+    </div>
+
+    <!-- Business Impact & Architecture Grid -->
+    <div class="two-col-grid">
+        <div class="card" id="businessImpactCard">
+            <div class="label">
+                <span>Business Impact / Outcome</span>
+            </div>
+            <p class="block-text" id="businessImpactText"></p>
+        </div>
+
+        <div class="card" id="architectureCard">
+            <div class="label">
+                <span>Architecture / Tools Used</span>
+            </div>
+            <p class="block-text" id="architectureText"></p>
+            <div class="arch-tags" id="archTags"></div>
+        </div>
+    </div>
+
+    <!-- Previous / Next Project Navigation -->
+    <div class="project-nav-bar" id="projectNavBar" style="display:none;">
+        <div id="prevProjectSlot"></div>
+        <div id="nextProjectSlot"></div>
     </div>
 </div>
 
@@ -362,6 +544,19 @@ let projectImages = [];
 let galleryIndex = 0;
 let galleryTimer = null;
 let isAutoPlaying = true;
+
+function escapeHtml(str = "") {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
+function isFeaturedProject(project) {
+    const val = String(project.Featured || project.featured || "").trim().toLowerCase();
+    return ["yes", "true", "1", "featured", "pin", "pinned"].includes(val);
+}
 
 function extractProjectImages(project) {
     const urls = [];
@@ -383,6 +578,125 @@ function extractProjectImages(project) {
     return [...new Set(urls)].slice(0, 5);
 }
 
+function parseKeyFeatures(project, overview) {
+    const raw = (project.KeyFeatures || project["Key Features"] || "").trim();
+    if (raw) {
+        return raw
+            .split(/[\n•·]+/)
+            .map(item => item.replace(/^[-*]\s*/, "").trim())
+            .filter(Boolean);
+    }
+
+    // Fallback: extract key feature sentences/lines from overview if KeyFeatures column is empty
+    const lines = String(overview || "")
+        .split(/\n+/)
+        .map(l => l.trim())
+        .filter(Boolean);
+
+    if (lines.length > 1) {
+        return lines.slice(1, 5).map(l => l.replace(/^[-*•]\s*/, ""));
+    }
+
+    const sentences = String(overview || "")
+        .split(/(?<=[.!?])\s+/)
+        .map(s => s.trim())
+        .filter(s => s.length > 12);
+
+    return sentences.slice(0, 3);
+}
+
+function buildBusinessImpact(project, overview) {
+    const explicit = (project.BusinessImpact || project["Business Impact"] || "").trim();
+    if (explicit) return explicit;
+
+    const lines = String(overview || "")
+        .split(/\n+/)
+        .map(l => l.trim())
+        .filter(Boolean);
+
+    if (lines.length >= 2) {
+        return lines[lines.length - 1];
+    }
+
+    return "Streamlines manual workflows, improves data visibility and accuracy, and supports faster operational decision-making.";
+}
+
+function buildArchitectureInfo(project) {
+    const explicit = (project.Architecture || "").trim();
+    const techRaw = (project.Technology || "Automation").trim();
+    const tools = techRaw
+        .split(/[,/|]+/)
+        .map(t => t.trim())
+        .filter(Boolean);
+
+    const description = explicit ||
+        `Built using ${tools.join(", ")} to connect data sources, automate business logic, and deliver an intuitive user experience.`;
+
+    return { description, tools };
+}
+
+function renderCaseStudySections(project, overview) {
+    // 1. Key Features
+    const features = parseKeyFeatures(project, overview);
+    const featuresCard = document.getElementById("keyFeaturesCard");
+    const featuresList = document.getElementById("keyFeaturesList");
+
+    if (features.length > 0) {
+        featuresList.innerHTML = features.map(f => `<li>${escapeHtml(f)}</li>`).join("");
+        featuresCard.style.display = "block";
+    } else {
+        featuresCard.style.display = "none";
+    }
+
+    // 2. Business Impact / Outcome
+    document.getElementById("businessImpactText").innerText = buildBusinessImpact(project, overview);
+
+    // 3. Architecture / Tools Used
+    const arch = buildArchitectureInfo(project);
+    document.getElementById("architectureText").innerText = arch.description;
+    document.getElementById("archTags").innerHTML = arch.tools
+        .map(tool => `<span class="arch-tag">${escapeHtml(tool)}</span>`)
+        .join("");
+}
+
+function renderPrevNextNav(projects, currentIdx) {
+    const navBar = document.getElementById("projectNavBar");
+    const prevSlot = document.getElementById("prevProjectSlot");
+    const nextSlot = document.getElementById("nextProjectSlot");
+
+    if (!projects.length || currentIdx === -1) {
+        navBar.style.display = "none";
+        return;
+    }
+
+    navBar.style.display = "grid";
+
+    if (currentIdx > 0) {
+        const prevProj = projects[currentIdx - 1];
+        const prevName = (prevProj.ProjectName || "Previous Project").trim();
+        prevSlot.innerHTML = `
+        <a href="project.html?project=${encodeURIComponent(prevName)}" class="proj-nav-card">
+            <span class="proj-nav-dir">← Previous Project</span>
+            <span class="proj-nav-title">${escapeHtml(prevName)}</span>
+        </a>`;
+    } else {
+        prevSlot.innerHTML = `<div class="proj-nav-placeholder">You are viewing the first project</div>`;
+    }
+
+    if (currentIdx < projects.length - 1) {
+        const nextProj = projects[currentIdx + 1];
+        const nextName = (nextProj.ProjectName || "Next Project").trim();
+        nextSlot.innerHTML = `
+        <a href="project.html?project=${encodeURIComponent(nextName)}" class="proj-nav-card next-card">
+            <span class="proj-nav-dir">Next Project →</span>
+            <span class="proj-nav-title">${escapeHtml(nextName)}</span>
+        </a>`;
+    } else {
+        nextSlot.innerHTML = `<div class="proj-nav-placeholder next-card">You are viewing the latest project</div>`;
+    }
+}
+
+/* Slideshow */
 function renderGallery(images, title) {
     projectImages = images;
     const galleryCard = document.getElementById("galleryCard");
@@ -401,7 +715,7 @@ function renderGallery(images, title) {
         btn.type = "button";
         btn.className = "thumb-btn" + (idx === 0 ? " active" : "");
         btn.setAttribute("aria-label", `View image ${idx + 1}`);
-        btn.innerHTML = `<img src="${url}" alt="${title} preview ${idx + 1}">`;
+        btn.innerHTML = `<img src="${url}" alt="${escapeHtml(title)} preview ${idx + 1}">`;
         btn.onclick = () => showGallerySlide(idx);
         thumbsEl.appendChild(btn);
     });
@@ -468,6 +782,7 @@ galleryStage.addEventListener("mouseleave", () => {
 async function loadProject() {
     const titleEl = document.getElementById("projectTitle");
     const techEl = document.getElementById("projectTechnology");
+    const featuredBadgeEl = document.getElementById("projectFeaturedBadge");
     const overviewEl = document.getElementById("projectOverview");
     const liveBtnEl = document.getElementById("projectLiveUrl");
 
@@ -481,21 +796,28 @@ async function loadProject() {
     try {
         const response = await fetch(SHEET_API);
         const data = await response.json();
+        const validProjects = Array.isArray(data)
+            ? data.filter(p => (p.ProjectName || "").trim() !== "")
+            : [];
 
-        const project = data.find(
+        const projectIndex = validProjects.findIndex(
             p => (p.ProjectName || "").trim().toLowerCase() === selectedProject.toLowerCase()
         );
+
+        const project = projectIndex !== -1 ? validProjects[projectIndex] : null;
 
         if (project) {
             const name = (project.ProjectName || "Project Details").trim();
             const tech = (project.Technology || "Automation").trim();
-            const overview = (project["Project Overview"] || "").trim();
+            const overview = (project["Project Overview"] || "").trim() || "No project overview available yet.";
             const liveUrl = (project.ProjectURL || "").trim();
+            const featured = isFeaturedProject(project);
 
             document.title = `${name} | HS Automation Solutions`;
             titleEl.innerText = name;
             techEl.innerText = tech;
-            overviewEl.innerText = overview || "No project overview available yet.";
+            featuredBadgeEl.style.display = featured ? "inline-flex" : "none";
+            overviewEl.innerText = overview;
 
             if (liveUrl) {
                 liveBtnEl.href = liveUrl;
@@ -503,6 +825,8 @@ async function loadProject() {
             }
 
             renderGallery(extractProjectImages(project), name);
+            renderCaseStudySections(project, overview);
+            renderPrevNextNav(validProjects, projectIndex);
         } else {
             titleEl.innerText = "Project Not Found";
             techEl.innerText = "Not Found";
